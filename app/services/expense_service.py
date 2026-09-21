@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from ..repositories import expense_repository, user_repository
 
-def get_expense(db:Session, expense_id:int):
-    return expense_repository.get_expense(db, expense_id)
+def get_expense(db:Session, user_id:int):
+    return expense_repository.get_expense(db, user_id)
 
 def user_expenses(db:Session, user_id:int):
     return expense_repository.get_user(db, user_id)

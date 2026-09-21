@@ -19,6 +19,3 @@ def delete_user(db:Session, user):
     db.commit()
     return {"message":"user deleted successfully", "deleted_user_id":user.id}
 
-def get_user_expenses(db:Session, user_id):
-    return db.query(models.Expense).filter(models.Expense.user_id == user_id).first()
-    

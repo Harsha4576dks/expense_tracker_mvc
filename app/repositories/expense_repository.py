@@ -11,8 +11,8 @@ def create_expense(db:Session, expense):
     db.refresh(db_expense)
     return db_expense
 
-def get_expense(db:Session, expense_id:int):
-    return db.query(models.Expense).filter(models.Expense.id == expense_id).first()
+def get_expense(db:Session, user_id:int):
+    return db.query(models.Expense).filter(models.Expense.user_id == user_id).all()
    
 
 def update_expense(db:Session, expense_id:int, update_data):

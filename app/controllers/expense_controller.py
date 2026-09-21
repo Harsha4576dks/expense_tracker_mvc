@@ -11,11 +11,11 @@ router = APIRouter(
     tags=["Expense"]
 )
 
-@router.get("/{expense_id}")
-async def get_expense(db:db_dependency, expense_id:int):
-    result = expense_service.get_expense(db, expense_id)
+@router.get("/{user_id}")
+async def get_expense(db:db_dependency, user_id:int):
+    result = expense_service.get_expense(db, user_id)
     if not result:
-        raise HTTPException(status_code=404, detail="expense not found")
+        raise HTTPException(status_code=404, detail=" user has no expenses yet")
         
     return result
 
