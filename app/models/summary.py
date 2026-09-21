@@ -9,7 +9,7 @@ class ExpenseSummary(Base):
     total_income = Column(Float, index=True)
     total_expense = Column(Float, index=True)
     balance_amount = Column(Float, index=True)
-  #  report = relationship("ExpenseReport", back_populates="summary", uselist=False)
+#     report = relationship("ExpenseReport", back_populates="summary", uselist=False)
 
 
 # class CategoryBreakdown(Base):

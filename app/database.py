@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from fastapi import Depends
 from typing import Annotated
 
-URL_DATABASE = 'postgresql://postgres:jag88@localhost:5432/expense_tracker'
+URL_DATABASE = 'postgresql://postgres:Harsha%402004dks@db.lvtxkulvkbgjleiwjlpj.supabase.co:5432/postgres'
 
 engine = create_engine(URL_DATABASE)
 
