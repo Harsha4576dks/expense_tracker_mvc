@@ -1,12 +1,14 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 
 from ..database import db_dependency
 from ..services import summary_service
 from ..schemas.summary_schemas import ExpenseSummary
+from ..security import security
 
 router = APIRouter(
     prefix="/summary",
-    tags=["Summary"]
+    tags=["Summary"],
+    dependencies=[Depends(security)]
 )
 
 @router.get("/{user_id}", response_model=ExpenseSummary)

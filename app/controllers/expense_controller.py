@@ -1,14 +1,16 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy .orm import Session
 
 from ..database import db_dependency
 from ..schemas.expense_schemas import ExpenseBase
 from ..schemas.update_expense_schemas import update_ExpenseBase
 from ..services import expense_service
+from ..security import security
 
 router = APIRouter(
     prefix="/expenses",
-    tags=["Expense"]
+    tags=["Expense"],
+    dependencies=[Depends(security)]
 )
 
 @router.get("/{user_id}")

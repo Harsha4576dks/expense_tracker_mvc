@@ -3,8 +3,12 @@ from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
 from fastapi import Depends
 from typing import Annotated
+from dotenv import load_dotenv
+import os
 
-URL_DATABASE = 'postgresql://postgres:Harsha%402004dks@db.lvtxkulvkbgjleiwjlpj.supabase.co:5432/postgres'
+load_dotenv()
+
+URL_DATABASE = os.getenv("DATABASE_URL")
 
 engine = create_engine(URL_DATABASE)
 
