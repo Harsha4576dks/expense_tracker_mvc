@@ -12,3 +12,4 @@ class Expense(Base):
     amount_spent = Column(Integer, index=True)
     user_id = Column(Integer, ForeignKey("user_data.id"))
     user = relationship("User", back_populates="expenses")
+    category = Column(String, index=True)

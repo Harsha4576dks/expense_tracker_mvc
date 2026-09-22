@@ -3,7 +3,7 @@ from ..import models
 from ..models.expense import Expense
 
 def create_expense(db:Session, expense):
-    db_expense = models.Expense(date=expense.date, description=expense.description,
+    db_expense = models.Expense(date=expense.date, description=expense.description,category=expense.category,
                                  payment_method=expense.payment_method, amount_spent=expense.amount_spent, 
                                  user_id=expense.user_id)
     db.add(db_expense)
