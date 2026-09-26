@@ -11,6 +11,9 @@ STANDARD_CATEGORIES = ["Food", "Lifestyle", "Medical", "Vehicle", "Other"]
 
 def get_aggregated_category_expenses(db: Session, user_id: int, start_date: date, end_date: date) -> dict[str, float]:
     expenses = graph_repository.get_user_expenses_by_date(db, user_id, start_date, end_date)
+    if not expenses:
+        return None
+    
     category_totals = {cat: 0.0 for cat in STANDARD_CATEGORIES}
 
     for expense in expenses:
@@ -23,9 +26,8 @@ def get_aggregated_category_expenses(db: Session, user_id: int, start_date: date
     return category_totals
 
 
-def generate_expense_graph_png(db: Session, user_id: int, start_date: date, end_date: date) -> bytes | None:
-    data = get_aggregated_category_expenses(db, user_id, start_date, end_date)
-
+def _build_matplotlib_figure(data: dict[str, float]):
+    
     x_categories = list(data.keys())
     y_prices = list(data.values())
 
@@ -48,10 +50,30 @@ def generate_expense_graph_png(db: Session, user_id: int, start_date: date, end_
     ax.grid(axis="y", linestyle="--", alpha=0.3)
 
     plt.tight_layout()
+    return fig
 
+
+def generate_expense_graph_png(db:Session, user_id:int, start_date:date, end_date:date) -> bytes | None:
+    data = get_aggregated_category_expenses(db, user_id, start_date, end_date)
+    if data is None:
+        return None
+    fig = _build_matplotlib_figure(data)
     buffer = io.BytesIO()
+    fig.savefig(buffer, format="png", bbox_inches="tight")
+    plt.close(fig)
+
+    buffer.seek(0)
+    return buffer.getvalue()
+
+
+def generate_expense_graph_pdf(db:Session, user_id:int, start_date:date, end_date:date) -> bytes | None:
+    data = get_aggregated_category_expenses(db, user_id, start_date, end_date)
+    if data is None:
+            return None
     
-    plt.savefig(buffer, format="png", bbox_inches="tight")
+    fig = _build_matplotlib_figure(data)
+    buffer = io.BytesIO()
+    fig.savefig(buffer, format="pdf", bbox_inches="tight")
     plt.close(fig)
 
     buffer.seek(0)
