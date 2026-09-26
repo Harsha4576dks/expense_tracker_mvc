@@ -77,8 +77,8 @@ def _build_matplotlib_figure( data: dict[str, float], user_id: int, user_name: s
     if include_footer:
         suggestion = _generate_progress_suggestion(data)
         commentary_text = (
-            f"📌 User Details : {user_name} (ID: #{user_id})  |  Period: {start_date} to {end_date}\n"
-            f"💡 Suggestion   : {suggestion}"
+            f" User Details : {user_name} (ID: #{user_id})  |  Period: {start_date} to {end_date}\n"
+            f" Suggestion   : {suggestion}"
         )
 
         fig.text(
