@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from ..models.expense import Expense
+from ..models.user import User
 from datetime import date
 
 
@@ -21,3 +22,6 @@ def get_user_expenses_by_date(db: Session, user_id: int, start_date: date, end_d
 
 def get_expense_by_id(db:Session, expense_id:int):
     return db.query(Expense).filter(Expense.id == expense_id).first()
+
+def get_user_by_id(db: Session, user_id: int):
+    return db.query(User).filter(User.id == user_id).first()
