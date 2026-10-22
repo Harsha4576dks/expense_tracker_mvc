@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import LoginForm from "./pages/loginForm";
 import Home from "./pages/Home";
 import "./App.css";
+import UserManagement from "./pages/userManagement";
 
 function App() {
     return (
@@ -11,6 +12,7 @@ function App() {
                 <Route path="/register" element={<LoginForm />} />
                 <Route path="/logout" element={<LoginForm />} />
                 <Route path="/home" element={<Home />} />
+                <Route path="/users" element={<UserManagement />} />
                 <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
         </Router>

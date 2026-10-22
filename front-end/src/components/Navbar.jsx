@@ -1,4 +1,5 @@
-import  { useState } from 'react';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; 
 import { 
   Receipt, 
   PieChart, 
@@ -14,14 +15,27 @@ import '../styles/Navbar.css';
 
 export default function Navbar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [activeItem, setActiveItem] = useState('Dashboard');
+  const [activeItem, setActiveItem] = useState('Expenses');
+  const navigate = useNavigate(); 
 
   const navItems = [
-    { name: 'User', icon: <User size={20} />, path: '#User' },
+    { name: 'User', icon: <User size={20} />, path: '/users' },
     { name: 'Expenses', icon: <Receipt size={20} />, path: '#expenses' },
     { name: 'Graph', icon: <PieChart size={20} />, path: '#Graph' },
     { name: 'Mail', icon: <Mail size={20} />, path: '#Email' },
   ];
+
+  
+  const handleLogout = async (e) => {
+    e.preventDefault(); 
+    try {      
+        await logoutUser();
+        localStorage.removeItem('token'); 
+        navigate('/login'); 
+    } catch (error) {
+      console.error('Failed to log out:', error);
+    }
+  };
 
   return (
     <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
@@ -40,30 +54,29 @@ export default function Navbar() {
         </button>
       </div>
 
-    
       <nav className="sidebar-nav">
         <ul>
           {navItems.map((item) => (
             <li key={item.name}>
-              <a
-                href={item.path}
+              <Link
+                to={item.path}
                 className={`nav-link ${activeItem === item.name ? 'active' : ''}`}
                 onClick={() => setActiveItem(item.name)}
               >
                 <span className="icon-wrapper">{item.icon}</span>
                 {!isCollapsed && <span className="link-text">{item.name}</span>}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
       </nav>
 
-      
+    
       <div className="sidebar-footer">
-        <a href="#logout" className="nav-link logout-link">
+        <button className="nav-link logout-link" onClick={handleLogout}>
           <span className="icon-wrapper"><LogOut size={20} /></span>
           {!isCollapsed && <span className="link-text">Logout</span>}
-        </a>
+        </button>
       </div>
     </aside>
   );
