@@ -52,15 +52,6 @@
     line-height: 1.7;
 }
 
-.logout-wrapper {
-    margin-top: 80px;
-    margin-bottom: 10px;
-}
-
-.logout-wrapper .custom-btn {
-    min-width: 140px;
-    margin-bottom: 20px;
-}
 
 @media (max-width: 480px) {
     .Home-container::before {
