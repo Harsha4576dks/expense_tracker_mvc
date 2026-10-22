@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createUser, getUser, deleteUser } from "../services/userService";
+import { createUser, getUser } from "../services/userService";
 import { getErrorMessage} from "../utils/errorhandler";
 
 const initialFormData = {
@@ -41,39 +41,23 @@ export const UserDetails = () => {
     }
 };
 
-   const fetchAllUSers = async (userId) => {
+   const fetchUserById = async (userId) => {
     setLoading(true);
     setError("");
+    setUserList([]);
     try {
         const data = await getUser(userId);
-        setUserList(data);
+        setUserList([data]);
     } catch (fetchError) {
+        setUserList([]);
         setError(getErrorMessage(fetchError));
     } finally {
         setLoading(false);
     }
    };
 
-   const handleDelete = async (userId) => {
-    if (! window.confirm("Are you sure you want to delete this record?")) return;
-    setLoading(true);
-    setError("");
-    setSuccess("");
-
-    try {
-        await deleteUser(userId);
-        setSuccess("User record deleted successfully.");
-        setUserList((prev) => prev.filter((user) => user.id !== userId));
-    } catch (deleteError) {
-        setError(getErrorMessage(deleteError));
-    } finally {
-        setLoading(false);
-    }
-   };
-
-
    return {
-    formData, handleChange, handleDelete, handleSubmit, loading, success,
-    error, setFormData, userList, fetchAllUSers
+    formData, handleChange, handleSubmit, loading, success,
+    error, setFormData, userList, fetchUserById
    }
 }

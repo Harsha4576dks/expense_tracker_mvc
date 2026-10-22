@@ -11,13 +11,8 @@ export const createUser = async (userData) => {
 
 export const getUser = async (userId) => {
     const response = await apiClient.get(`/users/${userId}`);
-    return response.data.map((user) => ({
-        ...user,
-        fullName: user.fullName ?? user.name,
-    }));
-};
-
-export const deleteUser = async (userId) => {
-    const response = await apiClient.delete(`/users/${userId}`);
-    return response.data;
+    return {
+        ...response.data,
+        fullName: response.data.fullName ?? response.data.name,
+    };
 };

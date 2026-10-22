@@ -1,24 +1,24 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { UserDetails } from '../hooks/userHook';
 import '../styles/userManagement.css'; 
 
 export default function UserManagement() {
+  const [searchTerm, setSearchTerm] = useState('');
   const {
     formData,
     handleChange,
-    handleDelete,
     handleSubmit,
     loading,
     success,
     error,
     userList,
-    fetchAllUSers
+    fetchUserById
   } = UserDetails();
 
-
-  useEffect(() => {
-    fetchAllUSers();
-  }, []);
+  const handleSearch = async (event) => {
+    event.preventDefault();
+    await fetchUserById(searchTerm);
+  };
 
   return (
     <div className="user-management-container">
@@ -80,36 +80,47 @@ export default function UserManagement() {
 
 
       <div className="user-table-card">
-        <h3>Registered Users</h3>
+        <div className="user-list-header">
+          <h3>Registered Users</h3>
+          <form className="user-search" onSubmit={handleSearch}>
+            <input
+              type="number"
+              min="1"
+              step="1"
+              required
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search by user ID"
+              aria-label="Search users by ID"
+              className="form-input"
+            />
+            <button type="submit" className="search-btn" disabled={loading}>
+              {loading ? 'Searching...' : 'Search'}
+            </button>
+          </form>
+        </div>
         
         {loading && userList.length === 0 ? (
           <p>Loading users...</p>
         ) : userList.length === 0 ? (
-          <p className="no-users-text">No user records found.</p>
+          <p className="no-users-text">Search by a user ID to view the matching record.</p>
         ) : (
           <table className="user-list-table">
             <thead>
               <tr className="table-header-row">
+                <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Salary</th>
-                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {userList.map((user) => (
                 <tr key={user.id} className="table-body-row">
+                  <td>{user.id}</td>
                   <td>{user.fullName}</td>
                   <td>{user.email}</td>
                   <td>{user.salary}</td>
-                  <td>
-                    <button
-                      onClick={() => handleDelete(user.id)}
-                      className="delete-action-btn"
-                    >
-                      Delete
-                    </button>
-                  </td>
                 </tr>
               ))}
             </tbody>
