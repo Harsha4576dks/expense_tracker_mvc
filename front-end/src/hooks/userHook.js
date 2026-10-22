@@ -8,7 +8,7 @@ const initialFormData = {
     email:"",
 };
 
-export const UserDetails = (onUserSaved) => {
+export const UserDetails = () => {
     const [formData, setFormData] = useState(initialFormData);
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState("");
@@ -31,11 +31,9 @@ export const UserDetails = (onUserSaved) => {
 
         try {
             const savedUser = await createUser(formData);
-            if (!savedUser?.id) {
-                setError("user details were saved , but there is some issue in the server , please try again later")
-            return;
-            }   
-        onUserSaved?.(savedUser.id);
+            setUserList((currentUsers) => [...currentUsers, savedUser]);
+            setFormData(initialFormData);
+            setSuccess("User details saved successfully.");
     } catch (submitError) {
         setError(getErrorMessage(submitError));
     } finally {
@@ -43,11 +41,11 @@ export const UserDetails = (onUserSaved) => {
     }
 };
 
-   const fetchAllUSers = async () => {
+   const fetchAllUSers = async (userId) => {
     setLoading(true);
     setError("");
     try {
-        const data = await getUser();
+        const data = await getUser(userId);
         setUserList(data);
     } catch (fetchError) {
         setError(getErrorMessage(fetchError));
@@ -64,8 +62,8 @@ export const UserDetails = (onUserSaved) => {
 
     try {
         await deleteUser(userId);
-        setSuccess("user record deleted successfully");
-        setUserList((prev) => prev.filter((user) => user.id != userId));
+        setSuccess("User record deleted successfully.");
+        setUserList((prev) => prev.filter((user) => user.id !== userId));
     } catch (deleteError) {
         setError(getErrorMessage(deleteError));
     } finally {
