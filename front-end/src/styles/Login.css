@@ -1,0 +1,133 @@
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 18px;
+    box-sizing: border-box;
+    background:
+        radial-gradient(circle at top left, rgba(129, 140, 248, 0.28), transparent 35%),
+        linear-gradient(135deg, #eef2ff 0%, #f8fafc 52%, #ecfeff 100%);
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.login-form {
+    width: 100%;
+    max-width: 420px;
+    padding: 36px;
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 22px 60px rgba(30, 41, 59, 0.13);
+}
+
+.login-form h2 {
+    margin: 0 0 26px;
+    color: #172554;
+    text-align: center;
+    font-size: 1.9rem;
+    font-weight: 750;
+    letter-spacing: -0.04em;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 19px;
+}
+
+.form-group label {
+    color: #334155;
+    font-size: 0.92rem;
+    font-weight: 650;
+}
+
+.form-group input {
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 13px;
+    box-sizing: border-box;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    outline: none;
+    background: #f8fafc;
+    color: #0f172a;
+    font: inherit;
+    transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.form-group input:focus {
+    border-color: #6366f1;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.14);
+}
+
+.login-form > .custom-btn {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.error-message,
+.success-message {
+    margin: 0 0 18px;
+    padding: 11px 13px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.error-message {
+    border: 1px solid #fecaca;
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.success-message {
+    border: 1px solid #bbf7d0;
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.login-form p:not(.error-message):not(.success-message) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 22px 0 0;
+    color: #64748b;
+    font-size: 0.92rem;
+}
+
+.login-form p button {
+    padding: 3px 2px;
+    border: 0;
+    background: transparent;
+    color: #4f46e5;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.login-form p button:hover {
+    color: #3730a3;
+    text-decoration: underline;
+}
+
+.login-form p button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+@media (max-width: 480px) {
+    .login-form {
+        padding: 27px 22px;
+        border-radius: 18px;
+    }
+
+    .login-form h2 {
+        font-size: 1.65rem;
+    }
+}

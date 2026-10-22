@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from .database import Base, engine
 from .middleware.authorization import AuthorizationMiddleware
 from dotenv import load_dotenv
@@ -18,6 +19,11 @@ from .models import summary
 from .models import auth_
 
 app = FastAPI(title = "Expense Tracker API")
+app.add_middleware( CORSMiddleware, 
+                   allow_origins=["http://localhost:5173"],
+                     allow_credentials=True, allow_methods=["*"],
+                       allow_headers=["*"], 
+                       )
 
 Base.metadata.create_all(bind=engine)
 
