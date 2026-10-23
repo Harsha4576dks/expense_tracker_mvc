@@ -1,6 +1,15 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { ExpenseDetails } from "../hooks/expenseHook"; 
 import "../styles/ExpenseManagement.css";
+
+const emptyFormData = {
+  date: "",
+  description: "",
+  category: "",
+  payment_method: "",
+  amount_spent: "",
+  user_id: "",
+};
 
 export default function ExpenseManagement() {
   const {
@@ -13,95 +22,116 @@ export default function ExpenseManagement() {
     fetchExpensebyId,
     loading,
     success,
-    error,
-    expenseData,    
+    error: hookError,
+    expenseData,
+    setExpenseData,
   } = ExpenseDetails();
 
-  const [isEditing, setIsEditing] = useState(false);
   const [searchId, setSearchId] = useState("");
+  const [selectedExpense, setSelectedExpense] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
-  
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (!searchId) return;
-    const data = await fetchExpensebyId(searchId);
-    if (data) {
-      setFormData({
-        date: data.date || "",
-        description: data.description || "",
-        category: data.category || "",
-        payment_method: data.payment_method || "",
-        amount_spent: data.amount_spent || "",
-        user_id: data.user_id || "",
-      });
-      setIsEditing(true);
+    const userId = searchId.trim();
+    if (!userId) return;
+
+    setExpenseData([]);
+    setIsEditing(false);
+    setSelectedExpense(null);
+
+    await fetchExpensebyId(userId);
+  };
+
+  const handleEditClick = (expense) => {
+    if (!expense) return;
+    setIsEditing(true);
+    setSelectedExpense(expense);
+    setFormData({
+      date: expense.date || "",
+      description: expense.description || "",
+      category: expense.category || "",
+      payment_method: expense.payment_method || "",
+      amount_spent: expense.amount_spent ?? "",
+      user_id: expense.user_id ?? "",
+    });
+  };
+
+  const onSubmitAction = async (e) => {
+    e.preventDefault();
+    if (isEditing) {
+      if (!selectedExpense) return;
+      const updated = await handleUpdate(selectedExpense.id, e);
+      if (updated) {
+        const updatedExpense = {
+          ...selectedExpense,
+          ...formData,
+          id: selectedExpense.id,
+        };
+        setIsEditing(false);
+        setSelectedExpense(null);
+        setFormData(emptyFormData);
+        setExpenseData((currentExpenses) =>
+          (currentExpenses || [])
+            .filter((expense) => expense.id !== selectedExpense.id)
+            .concat(
+              Number(updatedExpense.user_id) === Number(searchId)
+                ? [updatedExpense]
+                : [],
+            ),
+        );
+      }
+    } else {
+      const newExpense = await handleSubmit(e);
+      if (newExpense) {
+        const created = {
+          ...formData,
+          ...newExpense,
+          id: newExpense.id,
+        };
+        setSearchId(String(created.user_id));
+        setExpenseData((currentExpenses) =>
+          Number(searchId) === Number(created.user_id)
+            ? [...(currentExpenses || []).filter((expense) => expense.id !== created.id), created]
+            : [created],
+        );
+      }
     }
   };
 
-  const resetFormToCreate = () => {
+  const handleCancelEdit = () => {
     setIsEditing(false);
-    setSearchId("");
-    setFormData({
-      date: "",
-      description: "",
-      category: "",
-      payment_method: "",
-      amount_spent: "",
-      user_id: "",
-    });
+    setSelectedExpense(null);
+    setFormData(emptyFormData);
   };
 
   return (
     <div className="expense-management-container">
       <h2>Expense Management</h2>
 
-      
-      {error && <div className="alert-error">{error}</div>}
+      {/* Lookup Bar Form */}
+      <form onSubmit={handleSearch} className="lookup-form">
+        <input
+          type="number"
+          min="1"
+          required
+          aria-label="Search expenses by user ID"
+          placeholder="Search expenses by user ID"
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+          className="form-input"
+        />
+        <button type="submit" disabled={loading} className="secondary-btn">
+          Search
+        </button>
+      </form>
+
+      {hookError && <div className="alert-error">{hookError}</div>}
       {success && <div className="alert-success">{success}</div>}
 
-      
-      <div className="lookup-card">
-        <h3>Find Expense by ID</h3>
-        <form onSubmit={handleSearch} className="lookup-form">
-          <input
-            type="number"
-            placeholder="Enter Expense ID"
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-            className="form-input"
-          />
-          <button type="submit" disabled={loading} className="secondary-btn">
-            Search
-          </button>
-          {isEditing && (
-            <button
-              type="button"
-              onClick={resetFormToCreate}
-              className="cancel-btn"
-            >
-              Switch to Create New
-            </button>
-          )}
-        </form>
-
-        {expenseData && (
-          <div className="search-result-card" style={{ marginTop: '1rem', padding: '1rem', background: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
-            <h4>Found Expense Details:</h4>
-            <p><strong>ID:</strong> {expenseData.id}</p>
-            <p><strong>Description:</strong> {expenseData.description}</p>
-            <p><strong>Category:</strong> {expenseData.category}</p>
-            <p><strong>Amount:</strong> {expenseData.amount_spent}</p>
-            <p><strong>Date:</strong> {expenseData.date}</p>
-          </div>
-        )}
-      </div>
-
-      
-      <form
-        onSubmit={isEditing ? (e) => handleUpdate(searchId, e) : handleSubmit}
-        className="expense-form-card"
-      >
-        <h3>{isEditing ? `Edit Expense ID: ${searchId}` : "Add New Expense"}</h3>
+      {/* Expense Form (Handles both Create and Update) */}
+      <form onSubmit={onSubmitAction} className="expense-form-card">
+        <h3>{isEditing ? `Edit Expense ID: ${expenseData?.id}` : "Add New Expense"}</h3>
 
         <div className="form-field-group">
           <label>Date:</label>
@@ -111,8 +141,10 @@ export default function ExpenseManagement() {
             value={formData.date}
             onChange={handleChange}
             required
+            disabled={loading || isEditing}
             className="form-input"
           />
+          {isEditing && <small className="field-hint">Date cannot be changed by the current API.</small>}
         </div>
 
         <div className="form-field-group">
@@ -136,9 +168,11 @@ export default function ExpenseManagement() {
             value={formData.category}
             onChange={handleChange}
             required
+            disabled={loading || isEditing}
             placeholder="e.g., Food, Travel"
             className="form-input"
           />
+          {isEditing && <small className="field-hint">Category cannot be changed by the current API.</small>}
         </div>
 
         <div className="form-field-group">
@@ -158,7 +192,8 @@ export default function ExpenseManagement() {
           <label>Amount Spent:</label>
           <input
             type="number"
-            step="0.01"
+            min="0"
+            step="1"
             name="amount_spent"
             value={formData.amount_spent}
             onChange={handleChange}
@@ -189,15 +224,57 @@ export default function ExpenseManagement() {
           {isEditing && (
             <button
               type="button"
-              onClick={() => handleDelete(searchId)}
-              className="delete-action-btn"
+              className="cancel-btn"
+              onClick={handleCancelEdit}
               disabled={loading}
             >
-              Delete Record
+              Cancel Edit
             </button>
           )}
         </div>
       </form>
+
+      {/* Searched Record Details Card */}
+      {expenseData && expenseData.length === 0 && !hookError && (
+        <p className="no-expenses-text">No expenses found for user ID {searchId}.</p>
+      )}
+      {expenseData?.length > 0 && !isEditing && (
+        <div className="search-results">
+          <h3>Expenses for User ID {searchId}</h3>
+          {expenseData.map((expense) => (
+            <div className="search-result-card" key={expense.id}>
+              <h4>Expense ID: {expense.id}</h4>
+              <p><strong>Description:</strong> {expense.description}</p>
+              <p><strong>Category:</strong> {expense.category}</p>
+              <p><strong>Payment Method:</strong> {expense.payment_method}</p>
+              <p><strong>Amount:</strong> {expense.amount_spent}</p>
+              <p><strong>Date:</strong> {expense.date}</p>
+              <p><strong>User ID:</strong> {expense.user_id}</p>
+
+              <div className="card-actions">
+                <button type="button" className="secondary-btn" onClick={() => handleEditClick(expense)} disabled={loading}>
+                  Edit Record
+                </button>
+                <button
+                  type="button"
+                  className="delete-action-btn"
+                  onClick={async () => {
+                    const deleted = await handleDelete(expense.id);
+                    if (deleted) {
+                      setExpenseData((currentExpenses) =>
+                        (currentExpenses || []).filter((item) => item.id !== expense.id),
+                      );
+                    }
+                  }}
+                  disabled={loading}
+                >
+                  Delete Record
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

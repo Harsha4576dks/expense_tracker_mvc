@@ -29,11 +29,9 @@ export const getExpense = async (expenseId) => {
 export const updateExpense = async (expenseId, expenseData) => {
     try{
         const expensePayload = {
-            date: expenseData.date,
             description: expenseData.description,
-            category: expenseData.category,
             payment_method: expenseData.payment_method,
-            amount_spent: expenseData.amount_spent,
+            amount_spent: Number(expenseData.amount_spent),
             user_id: Number(expenseData.user_id),
         };
         const response = await apiClient.put(`/expenses/${expenseId}`, expensePayload);

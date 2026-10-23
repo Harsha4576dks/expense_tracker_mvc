@@ -37,7 +37,7 @@ export const ExpenseDetails = () => {
         setSuccess("");
 
         try  {
-            await createExpense(formData);
+            const createdExpense = await createExpense(formData);
             setSuccess("expense details saved successfully.");
             setFormData({
                 date: "",
@@ -46,10 +46,11 @@ export const ExpenseDetails = () => {
                 payment_method: "",
                 amount_spent: "",
                 user_id: "",
-
             });
+            return createdExpense;
         } catch (submitError) {
             setError(getErrorMessage(submitError));
+            return null;
         } finally {
             setLoading(false);
         }
@@ -64,10 +65,17 @@ export const ExpenseDetails = () => {
 
         try {
             const data = await getExpense(expenseId);
-            setExpenseData(data);
-            return data;
+            const expenses = Array.isArray(data) ? data : [data];
+            setExpenseData(expenses);
+            return expenses;
          } catch (fetchError) {
-            setError(getErrorMessage(fetchError));
+            const errorMessage = getErrorMessage(fetchError);
+            if (errorMessage.trim() === "user has no expenses yet") {
+                setExpenseData([]);
+                return [];
+            }
+            setError(errorMessage);
+            return null;
          } finally {
             setLoading(false);
          }
@@ -84,10 +92,10 @@ export const ExpenseDetails = () => {
             await updateExpense(expenseId, formData);
             setSuccess("expense details updated successfully");
 
-            const updated = await getExpense(expenseId);
-            setExpenseData(updated);
+            return true;
         } catch (updateError) {
             setError(getErrorMessage(updateError));
+            return false;
         } finally {
             setLoading(false);
         }
@@ -105,9 +113,10 @@ export const ExpenseDetails = () => {
         try {
             await deleteExpense(expenseId);
             setSuccess("expense records deleted successfully.");
-            setExpenseData(null);
+            return true;
         } catch (deleteError) {
             setError(getErrorMessage(deleteError));
+            return false;
         } finally {
             setLoading(false);
         }
@@ -117,5 +126,6 @@ export const ExpenseDetails = () => {
     return {
         formData, setFormData, handleChange, handleDelete, handleSubmit,
         handleUpdate, fetchExpensebyId, loading, success, error, expenseData,
+        setExpenseData,
     }
 }

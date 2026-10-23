@@ -34,7 +34,8 @@
 }
 
 .lookup-card,
-.expense-form-card {
+.expense-form-card,
+.search-result-card {
   background: #ffffff;
   padding: 1.75rem;
   border-radius: 10px;
@@ -44,11 +45,31 @@
 }
 
 .lookup-card h3,
-.expense-form-card h3 {
+.expense-form-card h3,
+.search-result-card h4 {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1rem;
   color: #1e293b;
+}
+
+.search-result-card p {
+  margin: 0.5rem 0;
+  color: #334155;
+  font-size: 0.95rem;
+}
+
+.search-results {
+  margin-top: 1.5rem;
+}
+
+.search-results > h3 {
+  margin-bottom: 1rem;
+}
+
+.no-expenses-text {
+  color: #64748b;
+  margin-top: 1rem;
 }
 
 .lookup-form {
@@ -85,7 +106,20 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
-.form-actions {
+.form-input:disabled {
+  color: #64748b;
+  background: #f1f5f9;
+  cursor: not-allowed;
+}
+
+.field-hint {
+  display: block;
+  margin-top: 0.4rem;
+  color: #64748b;
+}
+
+.form-actions,
+.card-actions {
   display: flex;
   gap: 1rem;
   margin-top: 1.25rem;
