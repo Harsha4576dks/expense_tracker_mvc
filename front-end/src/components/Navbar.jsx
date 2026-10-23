@@ -22,7 +22,7 @@ export default function Navbar() {
     { name: 'User', icon: <User size={20} />, path: '/users' },
     { name: 'Expenses', icon: <Receipt size={20} />, path: '/expenses' },
     { name: 'PDF', icon: <PieChart size={20} />, path: '/expenses/user' },
-    { name: 'Mail', icon: <Mail size={20} />, path: '#Email' },
+    { name: 'Mail', icon: <Mail size={20} />, path: '/email/send-expense-report' },
   ];
 
   

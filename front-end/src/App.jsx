@@ -5,6 +5,7 @@ import "./App.css";
 import UserManagement from "./pages/userManagement";
 import ExpenseManagement from "./pages/expenseManagement";
 import PdfManagement from "./pages/pdfManagement";
+import EmailManagement from "./pages/emailManagement";
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                 <Route path="/users" element={<UserManagement />} />
                 <Route path="/expenses" element={<ExpenseManagement />} />
                 <Route path="/expenses/user" element={<PdfManagement />} />
+                <Route path="/email/send-expense-report" element={<EmailManagement />} />
                 <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
         </Router>
