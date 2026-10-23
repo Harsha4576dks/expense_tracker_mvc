@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import "./App.css";
 import UserManagement from "./pages/userManagement";
 import ExpenseManagement from "./pages/expenseManagement";
+import PdfManagement from "./pages/pdfManagement";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                 <Route path="/home" element={<Home />} />
                 <Route path="/users" element={<UserManagement />} />
                 <Route path="/expenses" element={<ExpenseManagement />} />
+                <Route path="/expenses/user" element={<PdfManagement />} />
                 <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
         </Router>
