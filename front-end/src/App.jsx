@@ -3,6 +3,7 @@ import LoginForm from "./pages/loginForm";
 import Home from "./pages/Home";
 import "./App.css";
 import UserManagement from "./pages/userManagement";
+import ExpenseManagement from "./pages/expenseManagement";
 
 function App() {
     return (
@@ -13,6 +14,7 @@ function App() {
                 <Route path="/logout" element={<LoginForm />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/users" element={<UserManagement />} />
+                <Route path="/expenses" element={<ExpenseManagement />} />
                 <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
         </Router>

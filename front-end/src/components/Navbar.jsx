@@ -20,7 +20,7 @@ export default function Navbar() {
 
   const navItems = [
     { name: 'User', icon: <User size={20} />, path: '/users' },
-    { name: 'Expenses', icon: <Receipt size={20} />, path: '#expenses' },
+    { name: 'Expenses', icon: <Receipt size={20} />, path: '/expenses' },
     { name: 'Graph', icon: <PieChart size={20} />, path: '#Graph' },
     { name: 'Mail', icon: <Mail size={20} />, path: '#Email' },
   ];
