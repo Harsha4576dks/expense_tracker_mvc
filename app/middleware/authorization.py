@@ -9,7 +9,9 @@ from ..user_auth import verify_access_token
 
 class AuthorizationMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        path = request.url.path
+        if request.method == "OPTIONS":
+            return await call_next(request)
+        path = request.url.path.rstrip("/")
 
         public_routes = [
             "/auth/register",
