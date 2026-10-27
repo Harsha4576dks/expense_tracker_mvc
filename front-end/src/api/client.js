@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || 'https://expense-tracker-mvc-plum.vercel.app',
+    baseURL: import.meta.env.VITE_API_BASE_URL || 'https://expense-tracker-mvc.onrender.com',
     headers: {
         'Content-Type': 'application/json',
     },
