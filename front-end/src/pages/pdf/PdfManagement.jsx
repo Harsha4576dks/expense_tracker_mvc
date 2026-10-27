@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { usePdfDetails } from "../hooks/pdfHook";
-import "../styles/pdfManagement.css";
+import { usePdfDetails } from "../../hooks/pdfHook";
+import "./PdfManagement.css";
 
 export default function PdfManagement() {
   const [userId, setUserId] = useState("");

@@ -1,5 +1,5 @@
-import Navbar from "../components/Navbar";
-import '../styles/Home.css';
+import Navbar from "../navbar/Navbar";
+import "./Home.css";
 
 export default function Home() {
     

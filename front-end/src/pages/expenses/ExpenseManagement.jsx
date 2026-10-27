@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { ExpenseDetails } from "../hooks/expenseHook"; 
-import "../styles/ExpenseManagement.css";
+import { ExpenseDetails } from "../../hooks/expenseHook";
+import "./ExpenseManagement.css";
 
 const emptyFormData = {
   date: "",

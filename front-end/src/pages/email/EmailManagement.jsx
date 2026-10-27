@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useEmailDetails } from "../hooks/emailHook";
-import "../styles/emailManagement.css";
+import { useEmailDetails } from "../../hooks/emailHook";
+import "./EmailManagement.css";
 
 export default function EmailManagement() {
   const [userId, setUserId] = useState("");

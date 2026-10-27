@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { UserDetails } from '../hooks/userHook';
-import '../styles/userManagement.css'; 
+import { UserDetails } from '../../hooks/userHook';
+import "./UserManagement.css";
 
 export default function UserManagement() {
   const [searchTerm, setSearchTerm] = useState('');

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useLogin } from "../hooks/userLoginHook";
-import Button from '../components/Button';
-import '../styles/Login.css';
+import { useLogin } from "../../hooks/userLoginHook";
+import Button from "../button/Button";
+import "./LoginForm.css";
 
 export default function LoginForm() {
     const [username, setUsername] = useState('');

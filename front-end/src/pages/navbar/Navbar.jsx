@@ -10,8 +10,8 @@ import {
   Mail,
   User
 } from 'lucide-react'; 
-import { logoutUser } from '../services/loginService';
-import '../styles/Navbar.css'; 
+import { logoutUser } from "../../services/loginService";
+import "./Navbar.css";
 
 export default function Navbar() {
   const [isCollapsed, setIsCollapsed] = useState(false);

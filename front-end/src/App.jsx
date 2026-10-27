@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import LoginForm from "./pages/loginForm";
-import Home from "./pages/Home";
+import LoginForm from "./pages/login/LoginForm";
+import Home from "./pages/home/Home";
 import "./App.css";
-import UserManagement from "./pages/userManagement";
-import ExpenseManagement from "./pages/expenseManagement";
-import PdfManagement from "./pages/pdfManagement";
-import EmailManagement from "./pages/emailManagement";
+import UserManagement from "./pages/users/UserManagement";
+import ExpenseManagement from "./pages/expenses/ExpenseManagement";
+import PdfManagement from "./pages/pdf/PdfManagement";
+import EmailManagement from "./pages/email/EmailManagement";
 
 function App() {
     return (
