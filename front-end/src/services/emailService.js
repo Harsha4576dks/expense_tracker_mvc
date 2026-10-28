@@ -1,4 +1,4 @@
-import apiClient from "../api/client";
+import apiClient from "../middleware/client";
 
 export const sendExpenseReportEmail = async (userId, startDate, endDate, comment) => {
     try {

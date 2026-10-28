@@ -1,4 +1,4 @@
-import apiClient from "../api/client";
+import apiClient from "../middleware/client";
 
 export const createUser = async (userData) => {
     const response = await apiClient.post("/users/", {

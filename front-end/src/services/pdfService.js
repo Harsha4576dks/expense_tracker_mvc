@@ -1,4 +1,4 @@
-import apiClient from "../api/client";
+import apiClient from "../middleware/client";
 
 export const downloadUserExpensePdf = async (userId, startDate, endDate) => {
     try {
