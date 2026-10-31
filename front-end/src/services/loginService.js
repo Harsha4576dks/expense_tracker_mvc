@@ -6,15 +6,11 @@ export const loginUser  = async (username, password) => {
         password: password,
     });
 
-    if (response.data.access_token) {
-        localStorage.setItem('access_token', response.data.access_token);
-    }
-
     return response.data;
 };
 
-export const logoutUser = () => {
-    localStorage.removeItem('access_token');
+export const logoutUser = async () => {
+    await apiClient.post('/auth/logout');
 };
 
 export const registerUser = async (userData) => {
@@ -23,10 +19,6 @@ export const registerUser = async (userData) => {
         email: userData.email,
         password: userData.password,
     });
-
-    if (response.data.access_token) {
-        localStorage.setItem('access_token', response.data.access_token);
-    }
 
     return response.data;
 }
