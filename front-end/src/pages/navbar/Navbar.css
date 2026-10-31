@@ -9,10 +9,10 @@
   padding: 1.4rem 1rem 1rem;
   flex-direction: column;
   justify-content: space-between;
-  border-right: 1px solid #202a3c;
-  background: #111827;
-  color: #f8fafc;
-  box-shadow: 8px 0 30px rgba(15, 23, 42, 0.08);
+  border-right: 1px solid #e5e7eb;
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(245,248,255,0.96));
+  color: #172033;
+  box-shadow: 8px 0 30px rgba(15, 23, 42, 0.04);
 }
 
 .sidebar-header {
@@ -21,7 +21,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0 0.35rem 1.3rem;
-  border-bottom: 1px solid #293346;
+  border-bottom: 1px solid #e5e7eb;
   margin-bottom: 1.4rem;
 }
 
@@ -36,12 +36,12 @@
 
 .logo-icon {
   flex: 0 0 auto;
-  color: #a5b4fc;
+  color: #4f46e5;
 }
 
 .brand-name {
   overflow: hidden;
-  color: #f8fafc;
+  color: #172033;
   font-size: 1.02rem;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -75,7 +75,7 @@
   border: 0;
   border-radius: 9px;
   background: transparent;
-  color: #aab4c5;
+  color: #4b5563;
   cursor: pointer;
   font-size: 0.93rem;
   font-weight: 550;
@@ -100,27 +100,27 @@
 }
 
 .nav-link:hover {
-  background: #202b3d;
-  color: #f8fafc;
+  background: #f3f4f6;
+  color: #111827;
 }
 
 .nav-link.active {
-  background: rgba(99, 102, 241, 0.2);
-  color: #c7d2fe;
+  background: rgba(79, 70, 229, 0.10);
+  color: #312e81;
 }
 
 .nav-link.active .icon-wrapper {
-  color: #a5b4fc;
+  color: #4f46e5;
 }
 
 .sidebar-footer {
   padding-top: 1rem;
-  border-top: 1px solid #293346;
+  border-top: 1px solid #e5e7eb;
 }
 
 .logout-link:hover {
-  background: rgba(194, 65, 75, 0.16);
-  color: #fda4af;
+  background: rgba(194, 65, 75, 0.08);
+  color: #b4233d;
 }
 
 @media (max-width: 760px) {
@@ -133,7 +133,7 @@
     flex-direction: row;
     gap: 0.8rem;
     border-right: 0;
-    border-bottom: 1px solid #202a3c;
+    border-bottom: 1px solid #e5e7eb;
   }
 
   .sidebar-header {
@@ -170,7 +170,7 @@
     flex: 0 0 auto;
     padding: 0 0 0 0.55rem;
     border-top: 0;
-    border-left: 1px solid #293346;
+    border-left: 1px solid #e5e7eb;
   }
 }
 

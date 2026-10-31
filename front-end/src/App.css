@@ -1,35 +1,37 @@
 .app-shell {
-  --color-canvas: #111827;
-  --color-surface: #1b2535;
-  --color-surface-muted: #202b3d;
-  --color-border: #293346;
-  --color-border-subtle: #344156;
-  --color-text: #f8fafc;
-  --color-heading: #f8fafc;
-  --color-text-muted: #aab4c5;
-  --color-text-secondary: #cbd5e1;
-  --color-text-strong: #e2e8f0;
-  --color-input-border: #3a465b;
-  --color-input-disabled: #202b3d;
-  --color-text-disabled: #aab4c5;
-  --color-primary-soft: rgba(99, 102, 241, 0.16);
-  --color-danger-soft: rgba(194, 65, 75, 0.16);
-  --color-danger-border: rgba(253, 164, 175, 0.35);
-  --color-danger-text: #fda4af;
-  --color-success-soft: rgba(22, 131, 93, 0.16);
-  --color-success-border: rgba(110, 231, 183, 0.35);
-  --color-success-text: #6ee7b7;
-  --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.2);
+  --color-canvas: #f4f7fb;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f8fafc;
+  --color-border: #dfe7f5;
+  --color-border-subtle: #edf2fb;
+  --color-text: #172033;
+  --color-heading: #172033;
+  --color-text-muted: #5f6b7d;
+  --color-text-secondary: #374151;
+  --color-text-strong: #1f2937;
+  --color-input-border: #d8e0ee;
+  --color-input-disabled: #f2f5fa;
+  --color-text-disabled: #7b8799;
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-primary-soft: rgba(79, 70, 229, 0.10);
+  --color-danger-soft: rgba(194, 65, 75, 0.08);
+  --color-danger-border: rgba(194, 65, 75, 0.22);
+  --color-danger-text: #b4233d;
+  --color-success-soft: rgba(22, 131, 93, 0.08);
+  --color-success-border: rgba(22, 131, 93, 0.18);
+  --color-success-text: #136c4d;
+  --shadow-card: 0 12px 32px rgba(15, 23, 42, 0.06);
   display: grid;
   min-height: 100vh;
   grid-template-columns: 260px minmax(0, 1fr);
-  background: var(--color-canvas);
+  background: linear-gradient(135deg, #f6fbff 0%, #eef4ff 38%, #f9fafb 100%);
 }
 
 .app-main {
   min-width: 0;
   min-height: 100vh;
-  background: var(--color-canvas);
+  background: transparent;
 }
 
 .Home-container {
@@ -40,8 +42,8 @@
   align-items: flex-start;
   justify-content: center;
   background:
-    radial-gradient(ellipse at 92% 10%, rgba(79, 70, 229, 0.1), transparent 34%),
-    var(--color-canvas);
+    radial-gradient(ellipse at 92% 10%, rgba(79, 70, 229, 0.08), transparent 30%),
+    linear-gradient(135deg, rgba(255,255,255,0.4), rgba(240,245,255,0.75));
   text-align: left;
 }
 
