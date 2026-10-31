@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import { createUser, searchUsersByName } from "../services/userService";
+import { createUser, getUsers } from "../services/userService";
 import { getErrorMessage} from "../utils/errorhandler";
 
 const initialFormData = {
@@ -51,13 +51,13 @@ export const UserDetails = () => {
     }
 };
 
-    const fetchUsersByName = useCallback(async (name) => {
+    const fetchUsers = useCallback(async (name = "") => {
         const requestId = ++searchRequestId.current;
         setLoading(true);
         setError("");
 
         try {
-            const users = await searchUsersByName(name);
+            const users = await getUsers(name);
             if (requestId === searchRequestId.current) {
                 setUserList(users);
             }
@@ -77,6 +77,6 @@ export const UserDetails = () => {
 
    return {
     formData, handleChange, handleSubmit, loading, success,
-    error, setFormData, userList, fetchUsersByName, invalidateUserSearch
+    error, setFormData, userList, fetchUsers, invalidateUserSearch
    }
 }

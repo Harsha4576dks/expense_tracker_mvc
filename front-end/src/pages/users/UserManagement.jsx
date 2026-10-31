@@ -16,7 +16,7 @@ export default function UserManagement() {
     success,
     error,
     userList,
-    fetchUsersByName,
+    fetchUsers,
     invalidateUserSearch,
   } = UserDetails();
 
@@ -25,15 +25,16 @@ export default function UserManagement() {
     invalidateUserSearch();
 
     if (!name) {
+      fetchUsers();
       return undefined;
     }
 
     const timeoutId = setTimeout(() => {
-      fetchUsersByName(name);
+      fetchUsers(name);
     }, 350);
 
     return () => clearTimeout(timeoutId);
-  }, [searchTerm, fetchUsersByName, invalidateUserSearch]);
+  }, [searchTerm, fetchUsers, invalidateUserSearch]);
 
   useEffect(() => {
     if (!isFormOpen) {
@@ -61,7 +62,7 @@ export default function UserManagement() {
     const savedUser = await handleSubmit(event);
     if (savedUser) {
       if (savedUser.fullName.trim().toLowerCase() === searchTerm.trim().toLowerCase()) {
-        await fetchUsersByName(savedUser.fullName);
+        await fetchUsers(savedUser.fullName);
       } else {
         setSearchTerm(savedUser.fullName);
       }

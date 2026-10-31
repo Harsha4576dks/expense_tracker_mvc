@@ -17,9 +17,9 @@ export const getUser = async (userId) => {
     };
 };
 
-export const searchUsersByName = async (name) => {
-    const response = await apiClient.get("/users/search", {
-        params: { name },
+export const getUsers = async (name = "") => {
+    const response = await apiClient.get("/users/", {
+        params: name ? { name } : {},
     });
     return response.data.map((user) => ({
         ...user,

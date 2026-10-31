@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from typing import Optional
 
 
 from ..database import db_dependency
@@ -9,6 +10,10 @@ router = APIRouter(
     prefix="/users",
     tags=["user"],
 )
+
+@router.get("/")
+async def get_users(db:db_dependency, name:Optional[str]=None):
+    return user_service.get_users(db, name)
 
 @router.get("/search")
 async def search_users_by_name(db:db_dependency, name:str):

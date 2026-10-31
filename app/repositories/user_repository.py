@@ -14,8 +14,14 @@ def create_user(db:Session, user):
 def get_user(db:Session, user_id):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
+def get_users(db:Session, name:str|None=None):
+    query = db.query(models.User)
+    if name:
+        query = query.filter(models.User.name.ilike(f"%{name}%"))
+    return query.all()
+
 def search_users_by_name(db:Session, name:str):
-    return db.query(models.User).filter(models.User.name.ilike(f"%{name}%")).all()
+    return get_users(db, name)
 
 def get_users_by_exact_name(db:Session, name:str):
     return db.query(models.User).filter(func.lower(models.User.name) == name.lower()).all()
