@@ -1,4 +1,19 @@
 .login-container {
+  --color-canvas: #111827;
+  --color-surface: #1b2535;
+  --color-surface-muted: #202b3d;
+  --color-border: #293346;
+  --color-text: #f8fafc;
+  --color-text-heading: #f8fafc;
+  --color-text-muted: #aab4c5;
+  --color-text-secondary: #cbd5e1;
+  --color-input-border: #3a465b;
+  --color-danger-soft: rgba(194, 65, 75, 0.16);
+  --color-danger-border: rgba(253, 164, 175, 0.35);
+  --color-danger-text: #fda4af;
+  --color-success-soft: rgba(22, 131, 93, 0.16);
+  --color-success-border: rgba(110, 231, 183, 0.35);
+  --color-success-text: #6ee7b7;
   position: relative;
   display: flex;
   min-height: 100vh;
@@ -6,24 +21,26 @@
   justify-content: center;
   padding: 2rem 1.25rem;
   background:
-    radial-gradient(ellipse at 18% 15%, rgba(79, 70, 229, 0.11), transparent 34%),
-    radial-gradient(ellipse at 88% 85%, rgba(22, 131, 93, 0.07), transparent 30%),
+    radial-gradient(ellipse at 18% 15%, rgba(79, 70, 229, 0.16), transparent 34%),
+    radial-gradient(ellipse at 88% 85%, rgba(22, 131, 93, 0.1), transparent 30%),
     var(--color-canvas);
+  color: var(--color-text);
+  color-scheme: dark;
 }
 
 .login-form {
   width: 100%;
   max-width: 430px;
   padding: clamp(1.6rem, 5vw, 2.5rem);
-  border: 1px solid rgba(224, 229, 239, 0.9);
+  border: 1px solid var(--color-border);
   border-radius: 16px;
   background: var(--color-surface);
-  box-shadow: 0 24px 70px rgba(25, 36, 61, 0.11);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
 }
 
 .login-form h2 {
   margin: 0 0 1.7rem;
-  color: #172033;
+  color: var(--color-text-heading);
   font-size: 1.85rem;
   font-weight: 740;
   letter-spacing: -0.045em;
@@ -38,7 +55,7 @@
 }
 
 .form-group label {
-  color: #39445a;
+  color: var(--color-text-secondary);
   font-size: 0.88rem;
   font-weight: 620;
 }
@@ -47,13 +64,22 @@
   width: 100%;
   min-height: 46px;
   padding: 0.7rem 0.85rem;
-  border: 1px solid #d7dce7;
+  border: 1px solid var(--color-input-border);
   border-radius: 9px;
   outline: none;
-  background: #fff;
+  background: var(--color-surface-muted);
   color: var(--color-text);
   font: inherit;
   transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.form-group input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.form-group input::placeholder {
+  color: var(--color-text-muted);
 }
 
 .error-message,
@@ -67,15 +93,15 @@
 }
 
 .error-message {
-  border-color: #fecdd3;
+  border-color: var(--color-danger-border);
   background: var(--color-danger-soft);
-  color: #a52c3b;
+  color: var(--color-danger-text);
 }
 
 .success-message {
-  border-color: #a7f3d0;
+  border-color: var(--color-success-border);
   background: var(--color-success-soft);
-  color: #126844;
+  color: var(--color-success-text);
 }
 
 .login-form > .custom-btn {
