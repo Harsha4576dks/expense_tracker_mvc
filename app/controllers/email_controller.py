@@ -4,12 +4,10 @@ from sqlalchemy.orm import Session
 
 from ..database import get_db
 from ..services import email_service
-from ..security import security
 
 router = APIRouter(
     prefix="/email",
     tags = ["email operations"],
-    dependencies=[Depends(security)]
 )
 
 @router.post("/send-expense-report/{user_id}")

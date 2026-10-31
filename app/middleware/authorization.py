@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from ..database import SessionLocal
-from ..models.user import User
+from ..models.auth_ import AuthUser
 from ..user_auth import verify_access_token
 from ..cors_config import is_allowed_origin
 
@@ -45,7 +45,7 @@ class AuthorizationMiddleware(BaseHTTPMiddleware):
 
         db = SessionLocal()
         try:
-            user = db.query(User).filter( User.id == user_id ).first()
+            user = db.query(AuthUser).filter(AuthUser.id == user_id).first()
             if not user:
                 return JSONResponse( status_code=401, content={ "detail": "User not found"  } )
 

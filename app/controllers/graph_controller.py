@@ -5,12 +5,10 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from ..services.graph_service import generate_expense_graph_png
 from ..services.graph_service import generate_expense_graph_pdf
-from ..security import security
 
 router = APIRouter(
     prefix="/expenses",
     tags=["Expense Reports"],
-    dependencies=[Depends(security)]
 )
 
 
@@ -30,4 +28,3 @@ def download_user_expense_pdf(user_id:int, start_date:date, end_date:date, db:Se
 
     return Response(content=pdf_bytes, media_type="application/pdf", 
                     headers={"Content-Disposition": f'attachment; filename="expense_report_user_{user_id}.pdf"'})
-
