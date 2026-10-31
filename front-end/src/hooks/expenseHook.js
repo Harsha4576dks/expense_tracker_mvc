@@ -1,8 +1,8 @@
 import { useCallback, useRef, useState } from "react";
 import {
     createExpense,
+    getExpenses,
     getExpense,
-    searchExpensesByUserName,
     updateExpense,
     deleteExpense,
 } from "../services/expenseService";
@@ -16,6 +16,7 @@ export const ExpenseDetails = () => {
         payment_method: "",
         amount_spent: "",
         user_id: "",
+        user_name: "",
     });
 
     const [loading, setLoading] = useState(false);
@@ -53,6 +54,7 @@ export const ExpenseDetails = () => {
                 payment_method: "",
                 amount_spent: "",
                 user_id: "",
+                user_name: "",
             });
             return createdExpense;
         } catch (submitError) {
@@ -88,14 +90,14 @@ export const ExpenseDetails = () => {
          }
     };
 
-    const fetchExpensesByUserName = useCallback(async (userName) => {
+    const fetchExpenses = useCallback(async (userName = "") => {
         const requestId = ++searchRequestId.current;
         setLoading(true);
         setError("");
         setExpenseData(null);
 
         try {
-            const expenses = await searchExpensesByUserName(userName);
+            const expenses = await getExpenses(userName);
             if (requestId === searchRequestId.current) {
                 setExpenseData(expenses);
             }
@@ -157,7 +159,7 @@ export const ExpenseDetails = () => {
 
     return {
         formData, setFormData, handleChange, handleDelete, handleSubmit,
-        handleUpdate, fetchExpensebyId, fetchExpensesByUserName, invalidateExpenseSearch,
+        handleUpdate, fetchExpensebyId, fetchExpenses, invalidateExpenseSearch,
         loading, success, error, expenseData,
         setExpenseData,
     }

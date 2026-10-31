@@ -9,6 +9,7 @@ const emptyFormData = {
   payment_method: "",
   amount_spent: "",
   user_id: "",
+  user_name: "",
 };
 
 export default function ExpenseManagement() {
@@ -19,7 +20,7 @@ export default function ExpenseManagement() {
     handleDelete,
     handleSubmit,
     handleUpdate,
-    fetchExpensesByUserName,
+    fetchExpenses,
     invalidateExpenseSearch,
     loading,
     success,
@@ -42,15 +43,16 @@ export default function ExpenseManagement() {
     setExpenseData(null);
 
     if (!userName) {
+      fetchExpenses();
       return undefined;
     }
 
     const timeoutId = setTimeout(() => {
-      fetchExpensesByUserName(userName);
+      fetchExpenses(userName);
     }, 350);
 
     return () => clearTimeout(timeoutId);
-  }, [searchName, fetchExpensesByUserName, invalidateExpenseSearch, setExpenseData]);
+  }, [searchName, fetchExpenses, invalidateExpenseSearch, setExpenseData]);
 
   useEffect(() => {
     if (!isFormOpen) {
@@ -83,7 +85,9 @@ export default function ExpenseManagement() {
     const userIds = [...new Set((expenseData || []).map((expense) => expense.user_id))];
     setFormData({
       ...emptyFormData,
-      user_id: userIds.length === 1 ? userIds[0] : "",
+      user_name: userIds.length === 1
+        ? expenseData.find((expense) => expense.user_id === userIds[0])?.user_name || ""
+        : "",
     });
     setIsEditing(false);
     setSelectedExpense(null);
@@ -102,6 +106,7 @@ export default function ExpenseManagement() {
       payment_method: expense.payment_method || "",
       amount_spent: expense.amount_spent ?? "",
       user_id: expense.user_id ?? "",
+      user_name: expense.user_name || "",
     });
   };
 
@@ -131,11 +136,7 @@ export default function ExpenseManagement() {
     } else {
       const newExpense = await handleSubmit(e);
       if (newExpense) {
-        if (newExpense.user_name.trim().toLowerCase() === searchName.trim().toLowerCase()) {
-          await fetchExpensesByUserName(newExpense.user_name);
-        } else {
-          setSearchName(newExpense.user_name);
-        }
+        await fetchExpenses(searchName.trim());
         setIsFormOpen(false);
         setFormData(emptyFormData);
       }
@@ -283,14 +284,15 @@ export default function ExpenseManagement() {
             </div>
 
             <div className="form-field-group">
-              <label>User ID:</label>
+              <label>User Name:</label>
               <input
-                type="number"
-                name="user_id"
-                value={formData.user_id}
+                type="text"
+                name="user_name"
+                value={formData.user_name}
                 onChange={handleChange}
                 required
-                placeholder="Enter User ID"
+                disabled={loading || isEditing}
+                placeholder="Enter exact user name"
                 className="form-input"
               />
             </div>
@@ -313,14 +315,18 @@ export default function ExpenseManagement() {
       </div>
 
       {expenseData && expenseData.length === 0 && !hookError && (
-        <p className="no-expenses-text">No expenses found for {searchName}.</p>
+        <p className="no-expenses-text">
+          {searchName.trim()
+            ? `No expenses found for ${searchName}.`
+            : "No expenses found."}
+        </p>
       )}
       {loading && expenseData === null && (
         <p className="no-expenses-text">Searching expenses...</p>
       )}
       {expenseData?.length > 0 && !isEditing && (
         <div className="search-results">
-          <h3>Expenses for {searchName}</h3>
+          <h3>{searchName.trim() ? `Expenses for ${searchName}` : "All Expenses"}</h3>
           <div className="expense-table-wrapper">
             <table className="expense-list-table">
               <thead>

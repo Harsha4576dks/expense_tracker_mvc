@@ -8,7 +8,7 @@ export const createExpense = async (expenseData) => {
             category: expenseData.category,
             payment_method: expenseData.payment_method,
             amount_spent: Number(expenseData.amount_spent),
-            user_id: Number(expenseData.user_id)
+            user_name: expenseData.user_name.trim(),
         };
         const response = await apiClient.post("/expenses/", expensePayload);
         return response.data;
@@ -26,14 +26,14 @@ export const getExpense = async (expenseId) => {
     }
 };
 
-export const searchExpensesByUserName = async (userName) => {
+export const getExpenses = async (userName = "") => {
     try {
-        const response = await apiClient.get("/expenses/search", {
-            params: { name: userName },
+        const response = await apiClient.get("/expenses/", {
+            params: userName ? { name: userName } : {},
         });
         return response.data;
     } catch (error) {
-        throw error.response?.data?.detail ?? "Failed to search expenses";
+        throw error.response?.data?.detail ?? "Failed to fetch expenses";
     }
 };
 
