@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { UserDetails } from '../../hooks/userHook';
+import { DataTable } from '../../components/DataTable';
 import "./UserManagement.css";
 
 export default function UserManagement() {
@@ -193,36 +194,21 @@ export default function UserManagement() {
           <h3>Registered Users</h3>
         </div>
 
-        {loading && userList.length === 0 ? (
-          <p>{searchTerm.trim() ? 'Searching users...' : 'Loading users...'}</p>
-        ) : userList.length === 0 ? (
-          <p className="no-users-text">
-            {searchTerm.trim()
+        <DataTable
+          columns={[
+            { key: 'id', label: 'ID' },
+            { key: 'fullName', label: 'Name' },
+            { key: 'email', label: 'Email' },
+            { key: 'salary', label: 'Salary' },
+          ]}
+          data={userList}
+          loading={loading && userList.length === 0}
+          emptyMessage={
+            searchTerm.trim()
               ? `No users found for ${searchTerm}.`
-              : 'Search by a user name to view matching records.'}
-          </p>
-        ) : (
-          <table className="user-list-table">
-            <thead>
-              <tr className="table-header-row">
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Salary</th>
-              </tr>
-            </thead>
-            <tbody>
-              {userList.map((user) => (
-                <tr key={user.id} className="table-body-row">
-                  <td>{user.id}</td>
-                  <td>{user.fullName}</td>
-                  <td>{user.email}</td>
-                  <td>{user.salary}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+              : 'Search by a user name to view matching records.'
+          }
+        />
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ExpenseDetails } from "../../hooks/expenseHook";
+import { DataTable } from "../../components/DataTable";
 import "./ExpenseManagement.css";
 
 const emptyFormData = {
@@ -314,75 +315,54 @@ export default function ExpenseManagement() {
         </aside>
       </div>
 
-      {expenseData && expenseData.length === 0 && !hookError && (
-        <p className="no-expenses-text">
-          {searchName.trim()
-            ? `No expenses found for ${searchName}.`
-            : "No expenses found."}
-        </p>
-      )}
-      {loading && expenseData === null && (
-        <p className="no-expenses-text">Searching expenses...</p>
-      )}
-      {expenseData?.length > 0 && !isEditing && (
+      {!isEditing && (
         <div className="search-results">
           <h3>{searchName.trim() ? `Expenses for ${searchName}` : "All Expenses"}</h3>
-          <div className="expense-table-wrapper">
-            <table className="expense-list-table">
-              <thead>
-                <tr className="table-header-row">
-                  <th>ID</th>
-                  <th>Date</th>
-                  <th>Description</th>
-                  <th>Category</th>
-                  <th>Payment Method</th>
-                  <th>Amount</th>
-                  <th>User Name</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {expenseData.map((expense) => (
-                  <tr className="table-body-row" key={expense.id}>
-                    <td>{expense.id}</td>
-                    <td>{expense.date}</td>
-                    <td>{expense.description}</td>
-                    <td>{expense.category}</td>
-                    <td>{expense.payment_method}</td>
-                    <td>{expense.amount_spent}</td>
-                    <td>{expense.user_name}</td>
-                    <td>
-                      <div className="expense-row-actions">
-                        <button
-                          type="button"
-                          className="secondary-btn"
-                          onClick={() => handleEditClick(expense)}
-                          disabled={loading}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          className="delete-action-btn"
-                          onClick={async () => {
-                            const deleted = await handleDelete(expense.id);
-                            if (deleted) {
-                              setExpenseData((currentExpenses) =>
-                                (currentExpenses || []).filter((item) => item.id !== expense.id),
-                              );
-                            }
-                          }}
-                          disabled={loading}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DataTable
+            columns={[
+              { key: 'id', label: 'ID' },
+              { key: 'date', label: 'Date' },
+              { key: 'description', label: 'Description' },
+              { key: 'category', label: 'Category' },
+              { key: 'payment_method', label: 'Payment Method' },
+              { key: 'amount_spent', label: 'Amount' },
+              { key: 'user_name', label: 'User Name' },
+            ]}
+            data={expenseData || []}
+            loading={loading && expenseData === null}
+            emptyMessage={
+              searchName.trim()
+                ? `No expenses found for ${searchName}.`
+                : "No expenses found."
+            }
+            renderActions={(expense) => (
+              <div className="expense-row-actions">
+                <button
+                  type="button"
+                  className="secondary-btn"
+                  onClick={() => handleEditClick(expense)}
+                  disabled={loading}
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  className="delete-action-btn"
+                  onClick={async () => {
+                    const deleted = await handleDelete(expense.id);
+                    if (deleted) {
+                      setExpenseData((currentExpenses) =>
+                        (currentExpenses || []).filter((item) => item.id !== expense.id),
+                      );
+                    }
+                  }}
+                  disabled={loading}
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          />
         </div>
       )}
     </div>
