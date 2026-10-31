@@ -25,17 +25,14 @@
 }
 
 .lookup-form {
-  display: flex;
+  display: block;
   min-width: 0;
   flex: 1;
-  align-items: center;
-  gap: 0.7rem;
   margin: 0;
 }
 
 .lookup-form .form-input {
   min-width: 0;
-  flex: 1;
 }
 
 .expense-toolbar > button {
@@ -340,10 +337,6 @@ button:disabled {
     flex-wrap: wrap;
   }
 
-  .lookup-form {
-    flex: 1 1 420px;
-  }
-
   .expense-toolbar > button {
     align-self: center;
   }
@@ -355,11 +348,7 @@ button:disabled {
     flex-direction: column;
   }
 
-  .lookup-form {
-    flex-direction: column;
-  }
-
-  .lookup-form .secondary-btn,
+  .lookup-form,
   .expense-toolbar > button {
     width: 100%;
   }

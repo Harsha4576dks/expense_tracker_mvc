@@ -4,6 +4,12 @@ from ..repositories import expense_repository, user_repository
 def get_expense(db:Session, user_id:int):
     return expense_repository.get_expense(db, user_id)
 
+def search_expenses_by_user_name(db:Session, name:str):
+    trimmed_name = name.strip()
+    if not trimmed_name:
+        return []
+    return expense_repository.search_expenses_by_user_name(db, trimmed_name)
+
 def user_expenses(db:Session, user_id:int):
     return expense_repository.get_user(db, user_id)
 

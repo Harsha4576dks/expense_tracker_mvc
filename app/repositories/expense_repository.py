@@ -14,6 +14,26 @@ def create_expense(db:Session, expense):
 def get_expense(db:Session, user_id:int):
     return db.query(models.Expense).filter(models.Expense.user_id == user_id).all()
    
+def search_expenses_by_user_name(db:Session, name:str):
+    matches = (
+        db.query(models.Expense, models.User.name)
+        .join(models.User, models.Expense.user_id == models.User.id)
+        .filter(models.User.name.ilike(f"%{name.strip()}%"))
+        .all()
+    )
+    return [
+        {
+            "id": expense.id,
+            "date": expense.date,
+            "description": expense.description,
+            "category": expense.category,
+            "payment_method": expense.payment_method,
+            "amount_spent": expense.amount_spent,
+            "user_id": expense.user_id,
+            "user_name": user_name,
+        }
+        for expense, user_name in matches
+    ]
 
 def update_expense(db:Session, expense_id:int, update_data):
     db_expense = db.query(models.Expense).filter(models.Expense.id == expense_id).first()

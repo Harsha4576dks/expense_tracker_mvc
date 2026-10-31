@@ -26,6 +26,17 @@ export const getExpense = async (expenseId) => {
     }
 };
 
+export const searchExpensesByUserName = async (userName) => {
+    try {
+        const response = await apiClient.get("/expenses/search", {
+            params: { name: userName },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.detail ?? "Failed to search expenses";
+    }
+};
+
 export const updateExpense = async (expenseId, expenseData) => {
     try{
         const expensePayload = {

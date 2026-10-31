@@ -11,9 +11,17 @@ router = APIRouter(
     tags=["Expense"],
 )
 
+@router.get("/search")
+async def search_expenses_by_user_name(db:db_dependency, name:str):
+    return expense_service.search_expenses_by_user_name(db, name)
+
 @router.get("/{user_id}")
-async def get_expense(db:db_dependency, user_id:int):
-    result = expense_service.get_expense(db, user_id)
+async def get_expense(db:db_dependency, user_id:str):
+    if user_id.isdecimal():
+        result = expense_service.get_expense(db, int(user_id))
+    else:
+        result = expense_service.search_expenses_by_user_name(db, user_id)
+
     if not result:
         raise HTTPException(status_code=404, detail=" user has no expenses yet")
         
@@ -26,7 +34,16 @@ async def post_expenses(db:db_dependency, expense:ExpenseBase):
     if error == "user not found":
           raise HTTPException(status_code=404, detail="user not found on this id")
           
-    return  result
+    return {
+        "id": result.id,
+        "date": result.date,
+        "description": result.description,
+        "category": result.category,
+        "payment_method": result.payment_method,
+        "amount_spent": result.amount_spent,
+        "user_id": result.user_id,
+        "user_name": result.user.name,
+    }
 
 @router.put("/{expense_id}")
 async def update_expenses(db:db_dependency, expense_id:int, expenses:update_ExpenseBase):

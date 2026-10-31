@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
     createExpense,
     getExpense,
+    searchExpensesByUserName,
     updateExpense,
     deleteExpense,
 } from "../services/expenseService";
@@ -21,6 +22,12 @@ export const ExpenseDetails = () => {
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
     const [expenseData, setExpenseData] = useState(null);
+    const searchRequestId = useRef(0);
+
+    const invalidateExpenseSearch = useCallback(() => {
+        searchRequestId.current += 1;
+        setLoading(false);
+    }, []);
 
     const handleChange = (event) => {
         const {name, value} = event.target;
@@ -81,6 +88,31 @@ export const ExpenseDetails = () => {
          }
     };
 
+    const fetchExpensesByUserName = useCallback(async (userName) => {
+        const requestId = ++searchRequestId.current;
+        setLoading(true);
+        setError("");
+        setExpenseData(null);
+
+        try {
+            const expenses = await searchExpensesByUserName(userName);
+            if (requestId === searchRequestId.current) {
+                setExpenseData(expenses);
+            }
+            return expenses;
+        } catch (fetchError) {
+            if (requestId === searchRequestId.current) {
+                setError(getErrorMessage(fetchError));
+                setExpenseData([]);
+            }
+            return null;
+        } finally {
+            if (requestId === searchRequestId.current) {
+                setLoading(false);
+            }
+        }
+    }, []);
+
 
     const handleUpdate = async (expenseId, event) => {
         event.preventDefault();
@@ -125,7 +157,8 @@ export const ExpenseDetails = () => {
 
     return {
         formData, setFormData, handleChange, handleDelete, handleSubmit,
-        handleUpdate, fetchExpensebyId, loading, success, error, expenseData,
+        handleUpdate, fetchExpensebyId, fetchExpensesByUserName, invalidateExpenseSearch,
+        loading, success, error, expenseData,
         setExpenseData,
     }
 }

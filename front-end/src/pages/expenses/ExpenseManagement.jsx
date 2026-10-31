@@ -19,7 +19,8 @@ export default function ExpenseManagement() {
     handleDelete,
     handleSubmit,
     handleUpdate,
-    fetchExpensebyId,
+    fetchExpensesByUserName,
+    invalidateExpenseSearch,
     loading,
     success,
     error: hookError,
@@ -27,13 +28,29 @@ export default function ExpenseManagement() {
     setExpenseData,
   } = ExpenseDetails();
 
-  const [searchId, setSearchId] = useState("");
+  const [searchName, setSearchName] = useState("");
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const addExpenseButtonRef = useRef(null);
   const drawerCloseButtonRef = useRef(null);
   const wasFormOpenRef = useRef(false);
+
+  useEffect(() => {
+    const userName = searchName.trim();
+    invalidateExpenseSearch();
+    setExpenseData(null);
+
+    if (!userName) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(() => {
+      fetchExpensesByUserName(userName);
+    }, 350);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchName, fetchExpensesByUserName, invalidateExpenseSearch, setExpenseData]);
 
   useEffect(() => {
     if (!isFormOpen) {
@@ -62,22 +79,12 @@ export default function ExpenseManagement() {
     };
   }, [isFormOpen, setFormData]);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    const userId = searchId.trim();
-    if (!userId) return;
-
-    setExpenseData([]);
-    setFormData(emptyFormData);
-    setIsFormOpen(false);
-    setIsEditing(false);
-    setSelectedExpense(null);
-
-    await fetchExpensebyId(userId);
-  };
-
   const handleAddExpense = () => {
-    setFormData({ ...emptyFormData, user_id: searchId.trim() });
+    const userIds = [...new Set((expenseData || []).map((expense) => expense.user_id))];
+    setFormData({
+      ...emptyFormData,
+      user_id: userIds.length === 1 ? userIds[0] : "",
+    });
     setIsEditing(false);
     setSelectedExpense(null);
     setIsFormOpen(true);
@@ -116,29 +123,21 @@ export default function ExpenseManagement() {
         setExpenseData((currentExpenses) =>
           (currentExpenses || [])
             .filter((expense) => expense.id !== selectedExpense.id)
-            .concat(
-              Number(updatedExpense.user_id) === Number(searchId)
-                ? [updatedExpense]
-                : [],
-            ),
+            .concat(Number(updatedExpense.user_id) === Number(selectedExpense.user_id)
+              ? [updatedExpense]
+              : []),
         );
       }
     } else {
       const newExpense = await handleSubmit(e);
       if (newExpense) {
-        const created = {
-          ...formData,
-          ...newExpense,
-          id: newExpense.id,
-        };
-        setSearchId(String(created.user_id));
+        if (newExpense.user_name.trim().toLowerCase() === searchName.trim().toLowerCase()) {
+          await fetchExpensesByUserName(newExpense.user_name);
+        } else {
+          setSearchName(newExpense.user_name);
+        }
         setIsFormOpen(false);
         setFormData(emptyFormData);
-        setExpenseData((currentExpenses) =>
-          Number(searchId) === Number(created.user_id)
-            ? [...(currentExpenses || []).filter((expense) => expense.id !== created.id), created]
-            : [created],
-        );
       }
     }
   };
@@ -155,21 +154,16 @@ export default function ExpenseManagement() {
       <h2>Expense Management</h2>
 
       <div className="expense-toolbar">
-        <form onSubmit={handleSearch} className="lookup-form">
+        <div className="lookup-form">
           <input
-            type="number"
-            min="1"
-            required
-            aria-label="Search expenses by user ID"
-            placeholder="Search expenses by user ID"
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
+            type="search"
+            aria-label="Search expenses by user name"
+            placeholder="Search expenses by user name"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
             className="form-input"
           />
-          <button type="submit" disabled={loading} className="secondary-btn">
-            Search
-          </button>
-        </form>
+        </div>
         <button
           ref={addExpenseButtonRef}
           type="button"
@@ -319,11 +313,14 @@ export default function ExpenseManagement() {
       </div>
 
       {expenseData && expenseData.length === 0 && !hookError && (
-        <p className="no-expenses-text">No expenses found for user ID {searchId}.</p>
+        <p className="no-expenses-text">No expenses found for {searchName}.</p>
+      )}
+      {loading && expenseData === null && (
+        <p className="no-expenses-text">Searching expenses...</p>
       )}
       {expenseData?.length > 0 && !isEditing && (
         <div className="search-results">
-          <h3>Expenses for User ID {searchId}</h3>
+          <h3>Expenses for {searchName}</h3>
           <div className="expense-table-wrapper">
             <table className="expense-list-table">
               <thead>
@@ -334,7 +331,7 @@ export default function ExpenseManagement() {
                   <th>Category</th>
                   <th>Payment Method</th>
                   <th>Amount</th>
-                  <th>User ID</th>
+                  <th>User Name</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -347,7 +344,7 @@ export default function ExpenseManagement() {
                     <td>{expense.category}</td>
                     <td>{expense.payment_method}</td>
                     <td>{expense.amount_spent}</td>
-                    <td>{expense.user_id}</td>
+                    <td>{expense.user_name}</td>
                     <td>
                       <div className="expense-row-actions">
                         <button
