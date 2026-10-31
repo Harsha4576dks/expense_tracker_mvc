@@ -26,11 +26,91 @@
     var(--color-canvas);
   color: var(--color-text);
   color-scheme: dark;
+  overflow: clip;
+}
+
+.login-icon-collage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 18% 50%, rgba(99, 102, 241, 0.1), transparent 25%),
+    radial-gradient(ellipse at 83% 44%, rgba(139, 92, 246, 0.09), transparent 28%);
+}
+
+.login-icon-orbit {
+  position: absolute;
+  display: grid;
+  width: clamp(5.5rem, 10vw, 8rem);
+  aspect-ratio: 1;
+  place-items: center;
+  animation: login-icon-float 9s ease-in-out infinite;
+}
+
+.login-bg-icon {
+  width: 43%;
+  height: 43%;
+  color: rgba(165, 180, 252, 0.72);
+  stroke-width: 1.35;
+}
+
+.login-icon-orbit-left {
+  top: 28%;
+  left: max(4%, calc((100% - 1120px) / 2));
+  transform: rotate(-9deg);
+}
+
+.login-icon-orbit-top {
+  top: 8%;
+  right: 25%;
+  width: clamp(4.5rem, 8vw, 6.5rem);
+  animation-delay: -2s;
+}
+
+.login-icon-orbit-right {
+  top: 35%;
+  right: max(4%, calc((100% - 1120px) / 2));
+  width: clamp(6rem, 11vw, 9rem);
+  animation-delay: -4s;
+}
+
+.login-icon-orbit-bottom {
+  bottom: 10%;
+  left: 24%;
+  width: clamp(4.5rem, 8vw, 6.5rem);
+  animation-delay: -1s;
+}
+
+.login-icon-orbit-upper-left {
+  top: 10%;
+  left: 28%;
+  width: clamp(4rem, 7vw, 5.5rem);
+  animation-delay: -3s;
+}
+
+.login-icon-orbit-lower-right {
+  right: 27%;
+  bottom: 10%;
+  width: clamp(4rem, 7vw, 5.5rem);
+  animation-delay: -4s;
+}
+
+@keyframes login-icon-float {
+  0%, 100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -12px;
+  }
 }
 
 .login-form {
+  position: relative;
+  z-index: 1;
   width: 100%;
-  max-width: 430px;
+  max-width: 460px;
   padding: clamp(1.6rem, 5vw, 2.5rem);
   border: 1px solid var(--color-border);
   border-radius: 16px;
@@ -105,8 +185,24 @@
 }
 
 .login-form > .custom-btn {
-  width: 100%;
+  display: flex;
+  width: auto;
+  min-width: 120px;
   margin-top: 0.2rem;
+  margin-left: auto;
+  border: 0;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+}
+
+.login-form > .custom-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5558e8, #7c3aed);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.38);
+}
+
+.login-form > .custom-btn:focus-visible {
+  outline: 3px solid rgba(167, 139, 250, 0.75);
+  outline-offset: 3px;
 }
 
 .login-form p:not(.error-message):not(.success-message) {
@@ -138,4 +234,16 @@
 .login-form p button:disabled {
   cursor: not-allowed;
   opacity: 0.55;
+}
+
+@media (max-width: 600px) {
+  .login-icon-orbit {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-bg-icon {
+    animation: none;
+  }
 }

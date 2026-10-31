@@ -1,4 +1,12 @@
 import { useState } from "react";
+import {
+    Banknote,
+    ChartNoAxesCombined,
+    Coins,
+    CreditCard,
+    ReceiptText,
+    Wallet,
+} from "lucide-react";
 import { useLogin } from "../../hooks/userLoginHook";
 import Button from "../button/Button";
 import "./LoginForm.css";
@@ -21,7 +29,27 @@ export default function LoginForm() {
     };
 
     return (
-        <div className="login-container"> 
+        <div className="login-container">
+        <div className="login-icon-collage" aria-hidden="true">
+            <div className="login-icon-orbit login-icon-orbit-left">
+                <Wallet className="login-bg-icon login-bg-icon-wallet" />
+            </div>
+            <div className="login-icon-orbit login-icon-orbit-top">
+                <ChartNoAxesCombined className="login-bg-icon login-bg-icon-chart" />
+            </div>
+            <div className="login-icon-orbit login-icon-orbit-right">
+                <ReceiptText className="login-bg-icon login-bg-icon-receipt" />
+            </div>
+            <div className="login-icon-orbit login-icon-orbit-bottom">
+                <CreditCard className="login-bg-icon login-bg-icon-card" />
+            </div>
+            <div className="login-icon-orbit login-icon-orbit-upper-left">
+                <Banknote className="login-bg-icon login-bg-icon-banknote" />
+            </div>
+            <div className="login-icon-orbit login-icon-orbit-lower-right">
+                <Coins className="login-bg-icon login-bg-icon-coins" />
+            </div>
+        </div>
         <form className="login-form" onSubmit={onSubmit}> 
             <h2>{isRegister ? "Register" : "Login"}</h2> 
             
