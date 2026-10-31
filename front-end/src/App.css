@@ -1,32 +1,97 @@
-:root {
-    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
-    color: #172554;
-    background: #f8fafc;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+.app-shell {
+  --color-canvas: #111827;
+  --color-surface: #1b2535;
+  --color-surface-muted: #202b3d;
+  --color-border: #293346;
+  --color-border-subtle: #344156;
+  --color-text: #f8fafc;
+  --color-heading: #f8fafc;
+  --color-text-muted: #aab4c5;
+  --color-text-secondary: #cbd5e1;
+  --color-text-strong: #e2e8f0;
+  --color-input-border: #3a465b;
+  --color-input-disabled: #202b3d;
+  --color-text-disabled: #aab4c5;
+  --color-primary-soft: rgba(99, 102, 241, 0.16);
+  --color-danger-soft: rgba(194, 65, 75, 0.16);
+  --color-danger-border: rgba(253, 164, 175, 0.35);
+  --color-danger-text: #fda4af;
+  --color-success-soft: rgba(22, 131, 93, 0.16);
+  --color-success-border: rgba(110, 231, 183, 0.35);
+  --color-success-text: #6ee7b7;
+  --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.2);
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: 260px minmax(0, 1fr);
+  background: var(--color-canvas);
 }
 
-* {
-    box-sizing: border-box;
+.app-main {
+  min-width: 0;
+  min-height: 100vh;
+  background: var(--color-canvas);
 }
 
-html,
-body,
-#root {
-    min-width: 320px;
-    min-height: 100%;
-    margin: 0;
+.Home-container {
+  display: flex;
+  min-height: 100vh;
+  padding: clamp(2rem, 6vw, 5.5rem);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse at 92% 10%, rgba(79, 70, 229, 0.1), transparent 34%),
+    var(--color-canvas);
+  text-align: left;
 }
 
-body {
-    min-height: 100vh;
+.home-eyebrow {
+  margin-bottom: 1.2rem;
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-button,
-input,
-textarea,
-select {
-    font: inherit;
+.Home-container h1 {
+  max-width: 720px;
+  margin: 0 0 1rem;
+  color: var(--color-heading);
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 750;
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+}
+
+.Home-container p {
+  max-width: 560px;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  line-height: 1.75;
+}
+
+@media (max-width: 760px) {
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .app-main {
+    min-height: calc(100vh - 68px);
+  }
+
+  .Home-container {
+    min-height: calc(100vh - 68px);
+    padding: 3rem 1.5rem;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  .app-main,
+  .Home-container {
+    min-height: calc(100vh - 120px);
+  }
 }

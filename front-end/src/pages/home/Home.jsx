@@ -1,19 +1,11 @@
-import Navbar from "../navbar/Navbar";
 import "./Home.css";
 
 export default function Home() {
-    
     return (
-        <div className="layout-container">
-            <Navbar />
-            <div className="Home-container">
-                <h1>Welcome to the Expense Tracker Site</h1>
-                <p>you have successffully logged in to track your Expenses</p>
-
-
-
-                </div>
-            </div>
-        
+        <section className="Home-container">
+            <span className="home-eyebrow">YOUR FINANCIAL WORKSPACE</span>
+            <h1>Welcome to your expense workspace</h1>
+            <p>Manage users, track expenses, and prepare clear reports from one place.</p>
+        </section>
     );
 }

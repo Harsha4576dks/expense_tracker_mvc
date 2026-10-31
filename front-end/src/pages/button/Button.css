@@ -1,56 +1,50 @@
 .custom-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-height: 44px;
-    padding: 11px 20px;
-    border: 1px solid transparent;
-    border-radius: 10px;
-    color: #fff;
-    font-family: Inter, "Segoe UI", Arial, sans-serif;
-    font-size: 0.96rem;
-    font-weight: 700;
-    line-height: 1.2;
-    cursor: pointer;
-    transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.2rem;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.94rem;
+  font-weight: 680;
+  line-height: 1.2;
+  transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
 }
 
 .custom-btnprimary {
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
-    box-shadow: 0 8px 18px rgba(79, 70, 229, 0.22);
+  background: var(--color-primary);
+  box-shadow: 0 5px 12px rgba(79, 70, 229, 0.19);
 }
 
 .custom-btndanger {
-    background: linear-gradient(135deg, #f43f5e, #e11d48);
-    box-shadow: 0 8px 18px rgba(225, 29, 72, 0.2);
-}
-
-.custom-btn:hover:not(:disabled) {
-    transform: translateY(-1px);
+  background: var(--color-danger);
+  box-shadow: 0 5px 12px rgba(194, 65, 75, 0.17);
 }
 
 .custom-btnprimary:hover:not(:disabled) {
-    background: linear-gradient(135deg, #4f46e5, #4338ca);
-    box-shadow: 0 11px 22px rgba(79, 70, 229, 0.28);
+  background: var(--color-primary-hover);
+  box-shadow: 0 7px 16px rgba(79, 70, 229, 0.24);
 }
 
 .custom-btndanger:hover:not(:disabled) {
-    background: linear-gradient(135deg, #e11d48, #be123c);
-    box-shadow: 0 11px 22px rgba(225, 29, 72, 0.26);
+  background: #a9333d;
+  box-shadow: 0 7px 16px rgba(194, 65, 75, 0.23);
+}
+
+.custom-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
 }
 
 .custom-btn:active:not(:disabled) {
-    transform: translateY(0);
-}
-
-.custom-btn:focus-visible {
-    outline: 3px solid rgba(99, 102, 241, 0.35);
-    outline-offset: 3px;
+  transform: translateY(0);
 }
 
 .custom-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.58;
+  box-shadow: none;
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ExpenseDetails } from "../../hooks/expenseHook";
 import "./ExpenseManagement.css";
 
@@ -30,6 +30,37 @@ export default function ExpenseManagement() {
   const [searchId, setSearchId] = useState("");
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const addExpenseButtonRef = useRef(null);
+  const drawerCloseButtonRef = useRef(null);
+  const wasFormOpenRef = useRef(false);
+
+  useEffect(() => {
+    if (!isFormOpen) {
+      if (wasFormOpenRef.current) {
+        addExpenseButtonRef.current?.focus();
+        wasFormOpenRef.current = false;
+      }
+      return undefined;
+    }
+
+    wasFormOpenRef.current = true;
+    drawerCloseButtonRef.current?.focus();
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsEditing(false);
+        setSelectedExpense(null);
+        setIsFormOpen(false);
+        setFormData(emptyFormData);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isFormOpen, setFormData]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -37,16 +68,26 @@ export default function ExpenseManagement() {
     if (!userId) return;
 
     setExpenseData([]);
+    setFormData(emptyFormData);
+    setIsFormOpen(false);
     setIsEditing(false);
     setSelectedExpense(null);
 
     await fetchExpensebyId(userId);
   };
 
+  const handleAddExpense = () => {
+    setFormData({ ...emptyFormData, user_id: searchId.trim() });
+    setIsEditing(false);
+    setSelectedExpense(null);
+    setIsFormOpen(true);
+  };
+
   const handleEditClick = (expense) => {
     if (!expense) return;
     setIsEditing(true);
     setSelectedExpense(expense);
+    setIsFormOpen(true);
     setFormData({
       date: expense.date || "",
       description: expense.description || "",
@@ -70,6 +111,7 @@ export default function ExpenseManagement() {
         };
         setIsEditing(false);
         setSelectedExpense(null);
+        setIsFormOpen(false);
         setFormData(emptyFormData);
         setExpenseData((currentExpenses) =>
           (currentExpenses || [])
@@ -90,6 +132,8 @@ export default function ExpenseManagement() {
           id: newExpense.id,
         };
         setSearchId(String(created.user_id));
+        setIsFormOpen(false);
+        setFormData(emptyFormData);
         setExpenseData((currentExpenses) =>
           Number(searchId) === Number(created.user_id)
             ? [...(currentExpenses || []).filter((expense) => expense.id !== created.id), created]
@@ -102,6 +146,7 @@ export default function ExpenseManagement() {
   const handleCancelEdit = () => {
     setIsEditing(false);
     setSelectedExpense(null);
+    setIsFormOpen(false);
     setFormData(emptyFormData);
   };
 
@@ -109,170 +154,232 @@ export default function ExpenseManagement() {
     <div className="expense-management-container">
       <h2>Expense Management</h2>
 
-      {/* Lookup Bar Form */}
-      <form onSubmit={handleSearch} className="lookup-form">
-        <input
-          type="number"
-          min="1"
-          required
-          aria-label="Search expenses by user ID"
-          placeholder="Search expenses by user ID"
-          value={searchId}
-          onChange={(e) => setSearchId(e.target.value)}
-          className="form-input"
-        />
-        <button type="submit" disabled={loading} className="secondary-btn">
-          Search
+      <div className="expense-toolbar">
+        <form onSubmit={handleSearch} className="lookup-form">
+          <input
+            type="number"
+            min="1"
+            required
+            aria-label="Search expenses by user ID"
+            placeholder="Search expenses by user ID"
+            value={searchId}
+            onChange={(e) => setSearchId(e.target.value)}
+            className="form-input"
+          />
+          <button type="submit" disabled={loading} className="secondary-btn">
+            Search
+          </button>
+        </form>
+        <button
+          ref={addExpenseButtonRef}
+          type="button"
+          className="submit-btn"
+          onClick={handleAddExpense}
+          disabled={loading}
+        >
+          Add Expense
         </button>
-      </form>
+      </div>
 
       {hookError && <div className="alert-error">{hookError}</div>}
       {success && <div className="alert-success">{success}</div>}
 
-      {/* Expense Form (Handles both Create and Update) */}
-      <form onSubmit={onSubmitAction} className="expense-form-card">
-        <h3>{isEditing ? `Edit Expense ID: ${expenseData?.id}` : "Add New Expense"}</h3>
-
-        <div className="form-field-group">
-          <label>Date:</label>
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            required
-            disabled={loading || isEditing}
-            className="form-input"
-          />
-          {isEditing && <small className="field-hint">Date cannot be changed by the current API.</small>}
-        </div>
-
-        <div className="form-field-group">
-          <label>Description:</label>
-          <input
-            type="text"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-            placeholder="Enter description"
-            className="form-input"
-          />
-        </div>
-
-        <div className="form-field-group">
-          <label>Category:</label>
-          <input
-            type="text"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            required
-            disabled={loading || isEditing}
-            placeholder="e.g., Food, Travel"
-            className="form-input"
-          />
-          {isEditing && <small className="field-hint">Category cannot be changed by the current API.</small>}
-        </div>
-
-        <div className="form-field-group">
-          <label>Payment Method:</label>
-          <input
-            type="text"
-            name="payment_method"
-            value={formData.payment_method}
-            onChange={handleChange}
-            required
-            placeholder="e.g., Credit Card, Cash"
-            className="form-input"
-          />
-        </div>
-
-        <div className="form-field-group">
-          <label>Amount Spent:</label>
-          <input
-            type="number"
-            min="0"
-            step="1"
-            name="amount_spent"
-            value={formData.amount_spent}
-            onChange={handleChange}
-            required
-            placeholder="Enter amount"
-            className="form-input"
-          />
-        </div>
-
-        <div className="form-field-group">
-          <label>User ID:</label>
-          <input
-            type="number"
-            name="user_id"
-            value={formData.user_id}
-            onChange={handleChange}
-            required
-            placeholder="Enter User ID"
-            className="form-input"
-          />
-        </div>
-
-        <div className="form-actions">
-          <button type="submit" disabled={loading} className="submit-btn">
-            {loading ? "Processing..." : isEditing ? "Update Expense" : "Save Expense"}
-          </button>
-
-          {isEditing && (
+      <div
+        className={`side-drawer${isFormOpen ? " is-open" : ""}`}
+        aria-hidden={!isFormOpen}
+        inert={!isFormOpen}
+      >
+        <button
+          type="button"
+          className="side-drawer-backdrop"
+          aria-label="Close expense form"
+          tabIndex={-1}
+          onClick={handleCancelEdit}
+        />
+        <aside
+          className="side-drawer-panel"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="expense-drawer-title"
+        >
+          <div className="side-drawer-header">
+            <h3 id="expense-drawer-title">
+              {isEditing ? `Edit Expense ID: ${selectedExpense?.id}` : "Add New Expense"}
+            </h3>
             <button
+              ref={drawerCloseButtonRef}
               type="button"
-              className="cancel-btn"
+              className="cancel-btn side-drawer-close"
+              aria-label="Close expense form"
               onClick={handleCancelEdit}
-              disabled={loading}
             >
-              Cancel Edit
+              Close
             </button>
-          )}
-        </div>
-      </form>
+          </div>
 
-      {/* Searched Record Details Card */}
+          <form onSubmit={onSubmitAction} className="expense-form-card expense-drawer-form">
+            <div className="form-field-group">
+              <label>Date:</label>
+              <input
+                type="date"
+                name="date"
+                value={formData.date}
+                onChange={handleChange}
+                required
+                disabled={loading || isEditing}
+                className="form-input"
+              />
+              {isEditing && <small className="field-hint">Date cannot be changed by the current API.</small>}
+            </div>
+
+            <div className="form-field-group">
+              <label>Description:</label>
+              <input
+                type="text"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                required
+                placeholder="Enter description"
+                className="form-input"
+              />
+            </div>
+
+            <div className="form-field-group">
+              <label>Category:</label>
+              <input
+                type="text"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+                disabled={loading || isEditing}
+                placeholder="e.g., Food, Travel"
+                className="form-input"
+              />
+              {isEditing && <small className="field-hint">Category cannot be changed by the current API.</small>}
+            </div>
+
+            <div className="form-field-group">
+              <label>Payment Method:</label>
+              <input
+                type="text"
+                name="payment_method"
+                value={formData.payment_method}
+                onChange={handleChange}
+                required
+                placeholder="e.g., Credit Card, Cash"
+                className="form-input"
+              />
+            </div>
+
+            <div className="form-field-group">
+              <label>Amount Spent:</label>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                name="amount_spent"
+                value={formData.amount_spent}
+                onChange={handleChange}
+                required
+                placeholder="Enter amount"
+                className="form-input"
+              />
+            </div>
+
+            <div className="form-field-group">
+              <label>User ID:</label>
+              <input
+                type="number"
+                name="user_id"
+                value={formData.user_id}
+                onChange={handleChange}
+                required
+                placeholder="Enter User ID"
+                className="form-input"
+              />
+            </div>
+
+            <div className="form-actions">
+              <button type="submit" disabled={loading} className="submit-btn">
+                {loading ? "Processing..." : isEditing ? "Update Expense" : "Save Expense"}
+              </button>
+              <button
+                type="button"
+                className="cancel-btn"
+                onClick={handleCancelEdit}
+                disabled={loading}
+              >
+                {isEditing ? "Cancel Edit" : "Cancel"}
+              </button>
+            </div>
+          </form>
+        </aside>
+      </div>
+
       {expenseData && expenseData.length === 0 && !hookError && (
         <p className="no-expenses-text">No expenses found for user ID {searchId}.</p>
       )}
       {expenseData?.length > 0 && !isEditing && (
         <div className="search-results">
           <h3>Expenses for User ID {searchId}</h3>
-          {expenseData.map((expense) => (
-            <div className="search-result-card" key={expense.id}>
-              <h4>Expense ID: {expense.id}</h4>
-              <p><strong>Description:</strong> {expense.description}</p>
-              <p><strong>Category:</strong> {expense.category}</p>
-              <p><strong>Payment Method:</strong> {expense.payment_method}</p>
-              <p><strong>Amount:</strong> {expense.amount_spent}</p>
-              <p><strong>Date:</strong> {expense.date}</p>
-              <p><strong>User ID:</strong> {expense.user_id}</p>
-
-              <div className="card-actions">
-                <button type="button" className="secondary-btn" onClick={() => handleEditClick(expense)} disabled={loading}>
-                  Edit Record
-                </button>
-                <button
-                  type="button"
-                  className="delete-action-btn"
-                  onClick={async () => {
-                    const deleted = await handleDelete(expense.id);
-                    if (deleted) {
-                      setExpenseData((currentExpenses) =>
-                        (currentExpenses || []).filter((item) => item.id !== expense.id),
-                      );
-                    }
-                  }}
-                  disabled={loading}
-                >
-                  Delete Record
-                </button>
-              </div>
-            </div>
-          ))}
+          <div className="expense-table-wrapper">
+            <table className="expense-list-table">
+              <thead>
+                <tr className="table-header-row">
+                  <th>ID</th>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Payment Method</th>
+                  <th>Amount</th>
+                  <th>User ID</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {expenseData.map((expense) => (
+                  <tr className="table-body-row" key={expense.id}>
+                    <td>{expense.id}</td>
+                    <td>{expense.date}</td>
+                    <td>{expense.description}</td>
+                    <td>{expense.category}</td>
+                    <td>{expense.payment_method}</td>
+                    <td>{expense.amount_spent}</td>
+                    <td>{expense.user_id}</td>
+                    <td>
+                      <div className="expense-row-actions">
+                        <button
+                          type="button"
+                          className="secondary-btn"
+                          onClick={() => handleEditClick(expense)}
+                          disabled={loading}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="delete-action-btn"
+                          onClick={async () => {
+                            const deleted = await handleDelete(expense.id);
+                            if (deleted) {
+                              setExpenseData((currentExpenses) =>
+                                (currentExpenses || []).filter((item) => item.id !== expense.id),
+                              );
+                            }
+                          }}
+                          disabled={loading}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

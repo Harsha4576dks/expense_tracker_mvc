@@ -34,8 +34,10 @@ export const UserDetails = () => {
             setUserList((currentUsers) => [...currentUsers, savedUser]);
             setFormData(initialFormData);
             setSuccess("User details saved successfully.");
+            return savedUser;
     } catch (submitError) {
         setError(getErrorMessage(submitError));
+        return null;
     } finally {
         setLoading(false);
     }
