@@ -16,8 +16,24 @@ export default function UserManagement() {
     success,
     error,
     userList,
-    fetchUserById
+    fetchUsersByName,
+    invalidateUserSearch,
   } = UserDetails();
+
+  useEffect(() => {
+    const name = searchTerm.trim();
+    invalidateUserSearch();
+
+    if (!name) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(() => {
+      fetchUsersByName(name);
+    }, 350);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, fetchUsersByName, invalidateUserSearch]);
 
   useEffect(() => {
     if (!isFormOpen) {
@@ -41,14 +57,14 @@ export default function UserManagement() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isFormOpen]);
 
-  const handleSearch = async (event) => {
-    event.preventDefault();
-    await fetchUserById(searchTerm);
-  };
-
   const handleUserSubmit = async (event) => {
     const savedUser = await handleSubmit(event);
     if (savedUser) {
+      if (savedUser.fullName.trim().toLowerCase() === searchTerm.trim().toLowerCase()) {
+        await fetchUsersByName(savedUser.fullName);
+      } else {
+        setSearchTerm(savedUser.fullName);
+      }
       setIsFormOpen(false);
     }
   };
@@ -61,22 +77,16 @@ export default function UserManagement() {
       {success && <div className="alert-success">{success}</div>}
 
       <div className="user-toolbar">
-        <form className="user-search" onSubmit={handleSearch}>
+        <div className="user-search">
           <input
-            type="number"
-            min="1"
-            step="1"
-            required
+            type="search"
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Search by user ID"
-            aria-label="Search users by ID"
+            placeholder="Search by user name"
+            aria-label="Search users by name"
             className="form-input"
           />
-          <button type="submit" className="secondary-btn" disabled={loading}>
-            {loading ? 'Searching...' : 'Search'}
-          </button>
-        </form>
+        </div>
 
         <button
           ref={addUserButtonRef}
@@ -183,9 +193,13 @@ export default function UserManagement() {
         </div>
 
         {loading && userList.length === 0 ? (
-          <p>Loading users...</p>
+          <p>{searchTerm.trim() ? 'Searching users...' : 'Loading users...'}</p>
         ) : userList.length === 0 ? (
-          <p className="no-users-text">Search by a user ID to view the matching record.</p>
+          <p className="no-users-text">
+            {searchTerm.trim()
+              ? `No users found for ${searchTerm}.`
+              : 'Search by a user name to view matching records.'}
+          </p>
         ) : (
           <table className="user-list-table">
             <thead>

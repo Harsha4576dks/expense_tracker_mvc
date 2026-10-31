@@ -13,11 +13,9 @@
 }
 
 .user-search {
-  display: flex;
+  display: block;
   min-width: 0;
   flex: 1;
-  align-items: center;
-  gap: 0.65rem;
 }
 
 .user-search .form-input {
@@ -124,11 +122,7 @@
     flex-direction: column;
   }
 
-  .user-search {
-    flex-direction: column;
-  }
-
-  .user-search .secondary-btn,
+  .user-search,
   .user-toolbar > button {
     width: 100%;
   }

@@ -10,9 +10,17 @@ router = APIRouter(
     tags=["user"],
 )
 
+@router.get("/search")
+async def search_users_by_name(db:db_dependency, name:str):
+    return user_service.search_users_by_name(db, name)
+
 @router.get("/{user_id}")
-async def get_user(db:db_dependency, user_id:int):
-    result = user_service.get_user(db, user_id)
+async def get_user(db:db_dependency, user_id:str):
+    if user_id.isdecimal():
+        result = user_service.get_user(db, int(user_id))
+    else:
+        result = user_service.search_users_by_name(db, user_id)
+
     if result is None:
         raise HTTPException(status_code=404, detail="user not found")
     return result

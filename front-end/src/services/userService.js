@@ -16,3 +16,13 @@ export const getUser = async (userId) => {
         fullName: response.data.fullName ?? response.data.name,
     };
 };
+
+export const searchUsersByName = async (name) => {
+    const response = await apiClient.get("/users/search", {
+        params: { name },
+    });
+    return response.data.map((user) => ({
+        ...user,
+        fullName: user.fullName ?? user.name,
+    }));
+};

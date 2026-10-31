@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { createUser, getUser } from "../services/userService";
+import { useCallback, useRef, useState } from "react";
+import { createUser, searchUsersByName } from "../services/userService";
 import { getErrorMessage} from "../utils/errorhandler";
 
 const initialFormData = {
@@ -14,6 +14,14 @@ export const UserDetails = () => {
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
     const [userList, setUserList] = useState([]);
+    const searchRequestId = useRef(0);
+
+    const invalidateUserSearch = useCallback(() => {
+        searchRequestId.current += 1;
+        setLoading(false);
+        setError("");
+        setUserList([]);
+    }, []);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -43,23 +51,32 @@ export const UserDetails = () => {
     }
 };
 
-   const fetchUserById = async (userId) => {
-    setLoading(true);
-    setError("");
-    setUserList([]);
-    try {
-        const data = await getUser(userId);
-        setUserList([data]);
-    } catch (fetchError) {
-        setUserList([]);
-        setError(getErrorMessage(fetchError));
-    } finally {
-        setLoading(false);
-    }
-   };
+    const fetchUsersByName = useCallback(async (name) => {
+        const requestId = ++searchRequestId.current;
+        setLoading(true);
+        setError("");
+
+        try {
+            const users = await searchUsersByName(name);
+            if (requestId === searchRequestId.current) {
+                setUserList(users);
+            }
+            return users;
+        } catch (fetchError) {
+            if (requestId === searchRequestId.current) {
+                setUserList([]);
+                setError(getErrorMessage(fetchError));
+            }
+            return null;
+        } finally {
+            if (requestId === searchRequestId.current) {
+                setLoading(false);
+            }
+        }
+    }, []);
 
    return {
     formData, handleChange, handleSubmit, loading, success,
-    error, setFormData, userList, fetchUserById
+    error, setFormData, userList, fetchUsersByName, invalidateUserSearch
    }
 }
